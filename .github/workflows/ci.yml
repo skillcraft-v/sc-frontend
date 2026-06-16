@@ -1,0 +1,46 @@
+# CI do sc-frontend: lint, tipos, build e docs-guard.
+# Espelha o pipeline do sc-api (mesmas colunas/branches do workflow canônico).
+# NEXT_PUBLIC_API_URL é dummy de CI — única config pública; sem segredos (NFR-005).
+
+name: ci
+
+on:
+  pull_request:
+    branches: [development, main]
+  push:
+    branches: [development, main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    env:
+      NEXT_PUBLIC_API_URL: http://localhost:8000/api/v1
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # docs-guard precisa do histórico para diff contra o base
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: docs-guard
+        run: bash scripts/docs-guard.sh origin/${{ github.base_ref || 'development' }}
