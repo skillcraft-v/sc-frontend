@@ -49,11 +49,16 @@ dod_checklist:
   - "[ ] critérios de aceite do ticket satisfeitos"
   - "[ ] lint, typecheck e build verdes"
   - "[ ] estados de loading/erro tratados (códigos de erro do FDD seção 6)"
+  - "[ ] testes da camada apropriada criados (unit/component/integration); cada error.code do FDD §6 tratado tem teste"
+  - "[ ] npm run test:coverage verde (≥ 80% global; ≥ 90% em src/lib)"
+  - "[ ] E2E (Playwright) para fluxo crítico tocado (auth/adaptação) + checagem a11y (axe) das telas novas"
   - "[ ] tokens nunca logados; sem segredo no bundle"
   - "[ ] responsivo ≥ 360 px; textos em pt-BR"
   - "[ ] CHANGELOG.md atualizado ([Unreleased], (SKC-XX))"
   - "[ ] evidência: screenshot/GIF + passos de reprodução para o PR"
 ```
+
+> Estratégia e metas de teste: [docs/testing-strategy.md](../../../docs/testing-strategy.md). Visual regression e mutation testing (Stryker) são follow-up, não exigidos por task.
 
 ### CHECKPOINT 1 — Aprovação do brief
 Apresente problema, solução, escopo (telas, endpoints, rotas), ambiguidades e plano numerado. **Aguarde aprovação antes de continuar.**
@@ -67,8 +72,9 @@ Apresente problema, solução, escopo (telas, endpoints, rotas), ambiguidades e 
 
 ---
 
-## Fase 3 — Implementação
+## Fase 3 — Implementação (test-first)
 
+- **Test-first:** para cada regra/código de erro do FDD §6 que a UI trata, escreva o teste **antes ou junto** da implementação. Nenhum comportamento novo entra sem teste da camada apropriada (ver [docs/testing-strategy.md](../../../docs/testing-strategy.md)).
 - TypeScript strict; sem `any` não justificado; componentes pequenos e consistentes com o código vizinho.
 - Toda chamada à API passa pelo cliente tipado (sem `fetch` solto em componente).
 - Erros da API: mapear `error.code` (FDD seção 6) para mensagens pt-BR; nunca exibir stack/`request_id` cru ao usuário final (logar no console somente em dev).
@@ -77,14 +83,15 @@ Apresente problema, solução, escopo (telas, endpoints, rotas), ambiguidades e 
 
 ---
 
-## Fase 4 — Testes e verificação
+## Fase 4 — Testes e verificação (obrigatório)
 
 ```bash
 npm run lint && npm run typecheck && npm run build
-npm test   # quando houver testes do escopo
+npm run test:coverage    # gate real: falha abaixo do threshold
+npm run e2e              # fluxo crítico tocado (auth/adaptação) + a11y
 ```
 
-Capture **screenshot/GIF** do comportamento implementado + passos de reprodução (evidência do PR).
+Teste não é opcional: comportamento novo sem teste da camada apropriada é bloqueador no `/code-review-task`. Capture **screenshot/GIF** do comportamento + print do relatório de coverage (evidência do PR).
 
 ---
 
