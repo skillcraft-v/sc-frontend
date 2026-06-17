@@ -21,6 +21,16 @@ if has '^package\.json$' && ! has '^CHANGELOG\.md$'; then
   err "package.json mudou sem entrada no CHANGELOG.md (Dependencies)."
 fi
 
+# 3. Código em src/ exige teste no mesmo diff (unit/component/integration ou e2e).
+#    Ignora os próprios testes, a infra de teste, tipos puros e páginas (cobertas por E2E).
+SRC_CODE=$(echo "$CHANGED" | grep -E '^src/.*\.(ts|tsx)$' \
+  | grep -vE '(\.(test|spec)\.(ts|tsx)$|^src/test/|^src/.*\.d\.ts$|^src/lib/types\.ts$|^src/app/)' || true)
+HAS_TEST=no
+if echo "$CHANGED" | grep -qE '\.(test|spec)\.(ts|tsx)$'; then HAS_TEST=yes; fi
+if [ -n "$SRC_CODE" ] && [ "$HAS_TEST" = "no" ]; then
+  err "código em src/ mudou sem nenhum teste (*.test.ts[x] / e2e) no mesmo diff."
+fi
+
 if [ "$fail" -eq 1 ]; then
   echo ""
   echo "Atualize a documentação no mesmo branch e faça novo push."

@@ -39,10 +39,11 @@ Gate de qualidade antes do commit: revisar **apenas o diff do branch atual** con
 npm run lint
 npm run typecheck
 npm run build
-npm test   # se houver testes
+npm run test:coverage          # gate de cobertura (≥80% global; ≥90% src/lib)
+npm run e2e                     # quando o diff toca fluxo crítico (auth/adaptação)
 ```
 
-Erro em qualquer um = **bloqueador**.
+Erro em qualquer um = **bloqueador**. Cobertura abaixo do threshold = **bloqueador**.
 
 ## Etapa 4 — Docs-guard
 
@@ -53,6 +54,7 @@ Execute `scripts/docs-guard.sh` e verifique semanticamente:
 | Mudança em `src/`/`app/` | `CHANGELOG.md` `[Unreleased]` com `(SKC-XX)` | Bloqueador |
 | `package.json` (deps) | `CHANGELOG.md` seção Dependencies | Bloqueador |
 | Tela nova/alterada | Evidência screenshot/GIF referenciada no brief/PR | Bloqueador |
+| Código em `src/` (exceto tipos/testes/páginas) | teste (`*.test.ts[x]`/e2e) no mesmo diff | Bloqueador |
 
 ## Etapa 4.6 — Bug-hunt no diff (correção)
 
@@ -73,11 +75,27 @@ Classificação: bug provável com impacto real = **bloqueador**; suspeita/risco
 
 ## Etapa 4.7 — Suficiência de testes (além dos obrigatórios)
 
-1. Se houver runner configurado, rode coverage (`npm test -- --coverage`); enquanto o projeto não tiver runner, registre a lacuna como recomendação de tooling e faça a análise manual do diff.
+1. Rode `npm run test:coverage`. Cobertura abaixo do threshold (80% global / 90% em `src/lib`) é **bloqueador**.
 2. Para cada **branch novo/alterado sem cobertura** (incluindo estados de erro/vazio/loading das telas):
    - comportamento que espelha regra de negócio ou código de erro do FDD → teste ausente é **bloqueador**;
    - demais bordas → **recomendação** com o caso proposto (nome + cenário).
-3. Avalie a **qualidade das asserções**: teste que só renderiza sem verificar comportamento conta como ausente.
+3. Avalie a **qualidade das asserções**: teste que só renderiza sem verificar comportamento conta como ausente (ver Etapa 4.9).
+
+## Etapa 4.9 — Qualidade de teste (anti-padrões)
+
+Cobertura alta não prova teste bom. Rejeitar (conta como teste **ausente**, logo bloqueador quando cobre regra/erro do FDD):
+
+| # | Anti-padrão | Sinal |
+|---|-------------|-------|
+| 1 | Trivial | testa constante/markup estático sem comportamento |
+| 2 | Snapshot-only | único `toMatchSnapshot()` como toda a asserção |
+| 3 | Sem asserção | `render`/`act` sem nenhum `expect` |
+| 4 | Mock-heavy | mocka a própria unidade sob teste; só verifica que o mock foi chamado |
+| 5 | Detalhe de implementação | assere classe CSS/estado interno em vez de saída visível (preferir queries por role/texto) |
+| 6 | Duplicado / inflado | testes idênticos para subir %; `expect(true).toBe(true)` |
+
+Exigir validação significativa: comportamento de negócio, resultado para o usuário, caminho negativo (cada `error.code` do FDD §6), edge (vazio, lista longa, timeout do polling).
+Referência: [docs/testing-strategy.md](../../../docs/testing-strategy.md) §Phase 5.
 
 ## Etapa 4.8 — Reviews nativos do Claude Code (camada extra)
 

@@ -18,6 +18,8 @@ Closes SKC-
 <!-- O /code-review-task pré-marca os itens que verificou; confira antes do merge -->
 - [ ] Branch segue `feat/SKC-XX-slug` (ou `fix/SKC-XX-slug`) criada de `development`
 - [ ] `npm run lint`, `npm run typecheck` e `npm run build` verdes
+- [ ] Testes adicionados/atualizados; `npm run test:coverage` verde (≥ 80%; ≥ 90% em `src/lib`)
+- [ ] E2E (Playwright) + a11y (axe) para fluxo crítico, quando aplicável
 - [ ] Estados de loading/erro tratados (códigos de erro do FDD seção 6)
 - [ ] Nenhum token/segredo logado ou no bundle
 - [ ] Responsivo ≥ 360 px; textos em pt-BR

@@ -36,11 +36,17 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
-      - name: Test
-        run: npm test
+      - name: Test (unit + coverage gate)
+        run: npm run test:coverage
 
       - name: Build
         run: npm run build
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E + a11y (Playwright)
+        run: npm run e2e
 
       - name: docs-guard
         run: bash scripts/docs-guard.sh origin/${{ github.base_ref || 'development' }}
