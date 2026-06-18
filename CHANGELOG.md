@@ -12,6 +12,10 @@ Regras de manutenção (verificadas pelo `/code-review-task` e pelo docs-guard d
 ## [Unreleased]
 
 ### Added
+- Telas de skills (SKL): listagem com filtros (categoria, proficiência, tags, busca PT/EN) e paginação, formulário bilíngue (PT/EN) com editor de código (textarea monospace) e gestão de evidências (`/skills`, `/skills/nova`, `/skills/[id]`). (SKC-24)
+- Camada `src/lib/skills/`: tipos+enums (com rótulos pt-BR), chamadas tipadas (`api.ts`), hook de listagem race-safe (`use-skill-list.ts`) e mapa de `error.code` (FDD-SKL §6) → pt-BR. (SKC-24)
+- Primitivos de UI `Select` e `Textarea` (acessíveis); helpers genéricos de erro `src/lib/error-utils.ts` (`messageFromMap`, `fieldErrors`) reusados por auth e skills. (SKC-24)
+- Testes RTL+MSW dos fluxos de skills (lista/filtros/paginação, form bilíngue, evidências) + a11y de componente (axe) — 31 testes novos. (SKC-24)
 - Telas de autenticação (USR): registro com auto-login, login e perfil (`/registro`, `/login`, `/perfil`), consumindo `/auth/*`. (SKC-23)
 - Camada de sessão client-side `src/lib/auth/`: `SessionProvider`/`useSession` com hidratação automática via refresh no reload, guarda de rota `RequireAuth` e mapa de `error.code` (FDD-USR §6) → mensagens pt-BR. (SKC-23)
 - Primitivos de UI acessíveis (`src/components/ui/`): `Field` (label+aria-invalid+erro), `Button` (estado de carregamento), `Alert` (`role="alert"`). (SKC-23)
@@ -35,6 +39,7 @@ Regras de manutenção (verificadas pelo `/code-review-task` e pelo docs-guard d
 - Contraste de cor insuficiente (WCAG 1.4.3) nos textos auxiliares da home, detectado pelo novo teste de a11y. (SKC-28)
 
 ### Dependencies
+- Adicionado **vitest-axe** `^0.1.0` (a11y de componente nos testes). (SKC-24)
 - Adicionado **@testing-library/user-event** `^14.6.1` (interações nos testes de formulário). (SKC-23)
 - Adicionado tooling de teste: **@vitest/coverage-v8** `^3.2.6`, **msw** `^2.14.6`, **@playwright/test** `^1.61.0`, **@axe-core/playwright** `^4.11.3`. (SKC-28)
 - Adicionado **next** `15.5.19`, **react**/`react-dom` `19.1.0`, **tailwindcss** `^4.1.11` (`@tailwindcss/postcss`). (SKC-13)
