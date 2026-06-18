@@ -12,6 +12,10 @@ Regras de manutenção (verificadas pelo `/code-review-task` e pelo docs-guard d
 ## [Unreleased]
 
 ### Added
+- Telas de autenticação (USR): registro com auto-login, login e perfil (`/registro`, `/login`, `/perfil`), consumindo `/auth/*`. (SKC-23)
+- Camada de sessão client-side `src/lib/auth/`: `SessionProvider`/`useSession` com hidratação automática via refresh no reload, guarda de rota `RequireAuth` e mapa de `error.code` (FDD-USR §6) → mensagens pt-BR. (SKC-23)
+- Primitivos de UI acessíveis (`src/components/ui/`): `Field` (label+aria-invalid+erro), `Button` (estado de carregamento), `Alert` (`role="alert"`). (SKC-23)
+- Testes dos fluxos de auth (RTL+MSW): error-messages por code, sessão (hidratação/login/register/logout), login, registro e perfil — 30 testes novos. E2E smoke + a11y (axe) de `/login` e `/registro`. (SKC-23)
 - Estrutura de workflow do projeto: CLAUDE.md, skills `/task` e `/code-review-task` (versão frontend), template de PR, docs-guard e este changelog. (kickoff 2026-06-11)
 - Scaffold do frontend: Next.js (App Router) + TypeScript strict + Tailwind CSS v4, página inicial placeholder em pt-BR. (SKC-13)
 - Cliente HTTP único e tipado da API (`src/lib/api.ts`): baseURL via `NEXT_PUBLIC_API_URL`, header Bearer, desempacotamento do envelope de erro em `ApiError` e refresh automático de token em 401 (`POST /auth/refresh`, single-flight). (SKC-13)
@@ -31,6 +35,7 @@ Regras de manutenção (verificadas pelo `/code-review-task` e pelo docs-guard d
 - Contraste de cor insuficiente (WCAG 1.4.3) nos textos auxiliares da home, detectado pelo novo teste de a11y. (SKC-28)
 
 ### Dependencies
+- Adicionado **@testing-library/user-event** `^14.6.1` (interações nos testes de formulário). (SKC-23)
 - Adicionado tooling de teste: **@vitest/coverage-v8** `^3.2.6`, **msw** `^2.14.6`, **@playwright/test** `^1.61.0`, **@axe-core/playwright** `^4.11.3`. (SKC-28)
 - Adicionado **next** `15.5.19`, **react**/`react-dom` `19.1.0`, **tailwindcss** `^4.1.11` (`@tailwindcss/postcss`). (SKC-13)
 - Adicionado tooling de dev: **typescript** `^5.8.3`, **eslint** `^9` + `eslint-config-next` `15.5.19`, **prettier** `^3.6.2`, **vitest** `^3.2.4` + `@testing-library/react`/`jest-dom` + `jsdom`. (SKC-13)

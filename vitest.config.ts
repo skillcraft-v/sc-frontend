@@ -21,7 +21,7 @@ export default defineConfig({
         "src/test/**",
         "src/app/**",
         "src/**/*.d.ts",
-        "src/lib/types.ts", // só interfaces/tipos; sem código executável
+        "src/**/types.ts", // só interfaces/tipos; sem código executável
       ],
       thresholds: {
         lines: 80,
