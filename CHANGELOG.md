@@ -12,6 +12,11 @@ Regras de manutenção (verificadas pelo `/code-review-task` e pelo docs-guard d
 ## [Unreleased]
 
 ### Added
+- Fluxo de adaptação (ADP+PDF): ação "Adaptar" na vaga (`POST /adaptations`, idioma pt/en, auto-seleção de skills) → rota `/adaptacoes/[id]` com **polling de backoff (1s→5s) até estado terminal** (`completed`/`failed`) e cancelamento ao desmontar/navegar; em `completed` exibe aderência, gaps por severidade, recomendações, ajuste de tom e custo; em `failed` mostra erro pt-BR do `error.code`. Download e regeneração do PDF (outro idioma, sem IA) com versões listadas. As adaptações da vaga (SKC-26) agora linkam para o detalhe com status em pt-BR. (SKC-27)
+- Camada `src/lib/adaptations/`: tipos (status terminal, `Language`, `Gap`/`AiSuggestions`/`Cost`/`ResumeDocument`, rótulos pt-BR), chamadas tipadas (`api.ts`), hook de polling race-safe (`use-adaptation-poll.ts`), mapa de `error.code` (FDD-ADP §6 + FDD-PDF §6) → pt-BR e util de download (`save-blob.ts`). (SKC-27)
+- Componentes `src/components/adaptations/`: `AdaptTrigger`, `AdaptationResult`, `ResumeDocuments`. (SKC-27)
+- Suporte a download binário no cliente tipado: `api.getBlob` (`responseType: "blob"`) mantendo refresh automático e tratamento de erro via envelope JSON. (SKC-27)
+- Testes: 43 novos no Vitest (cliente blob, api/error-messages/poll/save-blob de adaptações, componentes com a11y axe, páginas de disparo e polling completed/failed/processing) + E2E do guard da rota `/adaptacoes/[id]`. (SKC-27)
 - Telas de vagas (JOB): lista `/vagas` com filtros (status, empresa, modalidade) e paginação + criação inline (colar descrição, mínimo 100 chars como cortesia de UX); detalhe `/vagas/[id]` com edição, movimentação do funil (botões só dos destinos válidos do grafo JOB-01) e histórico de adaptações (lista read-only — UI de ADP virá no SKC-27). (SKC-26)
 - Camada `src/lib/jobs/`: tipos+enum de status (rótulos pt-BR, grafo `NEXT_STATUSES` cosmético), chamadas tipadas (`api.ts`: CRUD + `changeJobStatus` + `listJobAdaptations`), hook de listagem race-safe (`use-job-list.ts`) e mapa de `error.code` (FDD-JOB §6) → pt-BR. (SKC-26)
 - Componentes `src/components/jobs/`: `JobForm`, `JobFilters`, `JobStatusBadge`, `StatusChanger` (transição inválida → mensagem pt-BR do backend, sem regra duplicada — P-006). (SKC-26)

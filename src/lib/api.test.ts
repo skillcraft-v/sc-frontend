@@ -154,3 +154,33 @@ describe("api — refresh automático em 401", () => {
     expect(getRefreshToken()).toBeNull();
   });
 });
+
+describe("api.getBlob — download binário", () => {
+  it("retorna o corpo como Blob em caso de sucesso", async () => {
+    setTokens({ access_token: "a", refresh_token: "r" });
+    server.use(
+      http.get(url("/file.pdf"), () =>
+        HttpResponse.arrayBuffer(new TextEncoder().encode("%PDF-1.7").buffer, {
+          headers: { "Content-Type": "application/pdf" },
+        }),
+      ),
+    );
+    const blob = await api.getBlob("/file.pdf");
+    // instanceof Blob é instável entre realms (undici/jsdom); validamos por comportamento.
+    expect(blob.type).toContain("application/pdf");
+    expect(blob.size).toBeGreaterThan(0);
+    expect(await blob.text()).toBe("%PDF-1.7");
+  });
+
+  it("um erro continua sendo um ApiError do envelope JSON (404)", async () => {
+    setTokens({ access_token: "a", refresh_token: "r" });
+    server.use(
+      http.get(url("/missing.pdf"), () =>
+        HttpResponse.json(errorEnvelope("RESUME_NOT_READY", "x"), { status: 404 }),
+      ),
+    );
+    const err = await expectApiError(api.getBlob("/missing.pdf"));
+    expect(err.code).toBe("RESUME_NOT_READY");
+    expect(err.status).toBe(404);
+  });
+});

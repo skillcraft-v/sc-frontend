@@ -13,9 +13,16 @@ import {
 } from "@/lib/jobs/api";
 import { jobErrorMessage } from "@/lib/jobs/error-messages";
 import type { Job, JobAdaptationSummary, JobInput, JobStatus } from "@/lib/jobs/types";
+import { createAdaptation } from "@/lib/adaptations/api";
+import {
+  STATUS_LABELS as ADAPTATION_STATUS_LABELS,
+  type AdaptationStatus,
+  type Language,
+} from "@/lib/adaptations/types";
 import { JobForm } from "@/components/jobs/JobForm";
 import { JobStatusBadge } from "@/components/jobs/JobStatusBadge";
 import { StatusChanger } from "@/components/jobs/StatusChanger";
+import { AdaptTrigger } from "@/components/adaptations/AdaptTrigger";
 import { Alert } from "@/components/ui/Alert";
 
 export default function VagaPage() {
@@ -63,6 +70,16 @@ function VagaDetalhe() {
   async function handleStatus(next: JobStatus) {
     const updated = await changeJobStatus(id, next);
     setJob(updated);
+  }
+
+  async function handleAdapt(language: Language) {
+    const accepted = await createAdaptation({
+      job_id: id,
+      auto_select_skills: true,
+      manual_skill_ids: [],
+      language,
+    });
+    router.push(`/adaptacoes/${accepted.adaptation_id}`);
   }
 
   async function handleDelete() {
@@ -122,6 +139,10 @@ function VagaDetalhe() {
 
       <StatusChanger status={job.status} onChange={handleStatus} />
 
+      <div className="border-t border-foreground/15 pt-6">
+        <AdaptTrigger onAdapt={handleAdapt} />
+      </div>
+
       <section className="flex flex-col gap-3 border-t border-foreground/15 pt-6">
         <h2 className="text-sm font-semibold text-foreground/90">Editar vaga</h2>
         <JobForm initial={job} submitLabel="Salvar alterações" onSubmit={handleUpdate} />
@@ -177,17 +198,21 @@ function JobAdaptations({ jobId }: { jobId: string }) {
       ) : (
         <ul className="flex flex-col gap-2">
           {items.map((a) => (
-            <li
-              key={a.id}
-              className="flex items-center justify-between gap-3 rounded-md border border-foreground/15 px-4 py-2 text-sm"
-            >
-              <span className="text-foreground/80">{a.created_at}</span>
-              <span className="flex items-center gap-3">
-                {typeof a.match_score === "number" ? (
-                  <span className="text-foreground/80">{Math.round(a.match_score * 100)}%</span>
-                ) : null}
-                <span className="font-medium">{a.status}</span>
-              </span>
+            <li key={a.id}>
+              <Link
+                href={`/adaptacoes/${a.id}`}
+                className="flex items-center justify-between gap-3 rounded-md border border-foreground/15 px-4 py-2 text-sm hover:border-foreground/40"
+              >
+                <span className="text-foreground/80">{a.created_at}</span>
+                <span className="flex items-center gap-3">
+                  {typeof a.match_score === "number" ? (
+                    <span className="text-foreground/80">{Math.round(a.match_score * 100)}%</span>
+                  ) : null}
+                  <span className="font-medium">
+                    {ADAPTATION_STATUS_LABELS[a.status as AdaptationStatus] ?? a.status}
+                  </span>
+                </span>
+              </Link>
             </li>
           ))}
         </ul>

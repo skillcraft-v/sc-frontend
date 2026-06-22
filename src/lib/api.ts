@@ -47,6 +47,11 @@ export interface RequestOptions extends Omit<RequestInit, "body"> {
   body?: unknown;
   /** Não anexar Bearer nem tentar refresh (ex.: chamadas de auth públicas). */
   skipAuth?: boolean;
+  /**
+   * Tipo da resposta de sucesso. `"json"` (default) desempacota o envelope; `"blob"`
+   * retorna o corpo binário (ex.: download de PDF). Erros seguem sempre o envelope JSON.
+   */
+  responseType?: "json" | "blob";
 }
 
 function isAbsoluteUrl(path: string): boolean {
@@ -141,7 +146,7 @@ async function performRequest<T>(
   options: RequestOptions,
   retry: boolean,
 ): Promise<T> {
-  const { body, skipAuth, headers, ...rest } = options;
+  const { body, skipAuth, headers, responseType, ...rest } = options;
   const isPublic = skipAuth || AUTH_PUBLIC_PATHS.some((p) => path.startsWith(p));
 
   const finalHeaders = new Headers(headers);
@@ -177,11 +182,13 @@ async function performRequest<T>(
     clearTokens();
   }
 
-  const parsed = await parseBody(response);
   if (!response.ok) {
-    throw toApiError(response.status, parsed);
+    throw toApiError(response.status, await parseBody(response));
   }
-  return parsed as T;
+  if (responseType === "blob") {
+    return (await response.blob()) as T;
+  }
+  return (await parseBody(response)) as T;
 }
 
 /** Executa uma requisição tipada contra a API, com refresh automático. */
@@ -192,6 +199,9 @@ export function apiRequest<T>(path: string, options: RequestOptions = {}): Promi
 export const api = {
   get: <T>(path: string, options?: RequestOptions): Promise<T> =>
     apiRequest<T>(path, { ...options, method: "GET" }),
+  /** GET que retorna o corpo binário (ex.: download de PDF), com auth/refresh. */
+  getBlob: (path: string, options?: RequestOptions): Promise<Blob> =>
+    apiRequest<Blob>(path, { ...options, method: "GET", responseType: "blob" }),
   post: <T>(path: string, body?: unknown, options?: RequestOptions): Promise<T> =>
     apiRequest<T>(path, { ...options, method: "POST", body }),
   put: <T>(path: string, body?: unknown, options?: RequestOptions): Promise<T> =>
