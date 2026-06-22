@@ -12,6 +12,10 @@ Regras de manutenção (verificadas pelo `/code-review-task` e pelo docs-guard d
 ## [Unreleased]
 
 ### Added
+- Telas de carreira (CAR): hub `/carreira` com projetos, educação e certificações (CRUD); rota `/carreira/projetos/[id]` para editar projeto e gerenciar o vínculo ponderado projeto–skill (slider de peso [0,1], upsert/remover). (SKC-25)
+- Camada `src/lib/career/`: tipos, chamadas tipadas (CRUD dos 3 agregados + link/unlink skill), hook genérico de lista race-safe (`use-resource-list`) e mapa de `error.code` (FDD-CAR §6) → pt-BR. (SKC-25)
+- Primitivo de UI `Checkbox` (acessível) para "em andamento" (datas null). (SKC-25)
+- Testes RTL+MSW de carreira (api, hook, formulários com validação de data, vínculo de skills, hub) + a11y de componente — 35 testes novos. (SKC-25)
 - Telas de skills (SKL): listagem com filtros (categoria, proficiência, tags, busca PT/EN) e paginação, formulário bilíngue (PT/EN) com editor de código (textarea monospace) e gestão de evidências (`/skills`, `/skills/nova`, `/skills/[id]`). (SKC-24)
 - Camada `src/lib/skills/`: tipos+enums (com rótulos pt-BR), chamadas tipadas (`api.ts`), hook de listagem race-safe (`use-skill-list.ts`) e mapa de `error.code` (FDD-SKL §6) → pt-BR. (SKC-24)
 - Primitivos de UI `Select` e `Textarea` (acessíveis); helpers genéricos de erro `src/lib/error-utils.ts` (`messageFromMap`, `fieldErrors`) reusados por auth e skills. (SKC-24)

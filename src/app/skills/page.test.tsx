@@ -1,4 +1,4 @@
-import { render, screen, waitFor, cleanup, within } from "@testing-library/react";
+import { render, screen, cleanup, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import SkillsPage from "@/app/skills/page";
