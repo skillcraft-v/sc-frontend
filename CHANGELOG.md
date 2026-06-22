@@ -12,6 +12,10 @@ Regras de manutenção (verificadas pelo `/code-review-task` e pelo docs-guard d
 ## [Unreleased]
 
 ### Added
+- Telas de vagas (JOB): lista `/vagas` com filtros (status, empresa, modalidade) e paginação + criação inline (colar descrição, mínimo 100 chars como cortesia de UX); detalhe `/vagas/[id]` com edição, movimentação do funil (botões só dos destinos válidos do grafo JOB-01) e histórico de adaptações (lista read-only — UI de ADP virá no SKC-27). (SKC-26)
+- Camada `src/lib/jobs/`: tipos+enum de status (rótulos pt-BR, grafo `NEXT_STATUSES` cosmético), chamadas tipadas (`api.ts`: CRUD + `changeJobStatus` + `listJobAdaptations`), hook de listagem race-safe (`use-job-list.ts`) e mapa de `error.code` (FDD-JOB §6) → pt-BR. (SKC-26)
+- Componentes `src/components/jobs/`: `JobForm`, `JobFilters`, `JobStatusBadge`, `StatusChanger` (transição inválida → mensagem pt-BR do backend, sem regra duplicada — P-006). (SKC-26)
+- Testes RTL+MSW de vagas (api com querystring/CRUD/transição, matriz de erros §6, lista com filtro/criação, detalhe com transição válida/inválida e adaptações, `JobForm` com a11y axe) — 28 testes novos. (SKC-26)
 - Telas de carreira (CAR): hub `/carreira` com projetos, educação e certificações (CRUD); rota `/carreira/projetos/[id]` para editar projeto e gerenciar o vínculo ponderado projeto–skill (slider de peso [0,1], upsert/remover). (SKC-25)
 - Camada `src/lib/career/`: tipos, chamadas tipadas (CRUD dos 3 agregados + link/unlink skill), hook genérico de lista race-safe (`use-resource-list`) e mapa de `error.code` (FDD-CAR §6) → pt-BR. (SKC-25)
 - Primitivo de UI `Checkbox` (acessível) para "em andamento" (datas null). (SKC-25)
