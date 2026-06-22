@@ -7,8 +7,9 @@ import { clearTokens, setTokens } from "@/lib/auth-tokens";
 import { server } from "@/test/msw/server";
 import { http, HttpResponse, url, errorEnvelope } from "@/test/msw/handlers";
 
+const pushMock = vi.fn();
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push: vi.fn(), replace: vi.fn(), prefetch: vi.fn() }),
+  useRouter: () => ({ push: pushMock, replace: vi.fn(), prefetch: vi.fn() }),
   useParams: () => ({ id: "j1" }),
   usePathname: () => "/vagas/j1",
   useSearchParams: () => new URLSearchParams(),
@@ -35,6 +36,7 @@ const baseJob = {
 beforeEach(() => {
   clearTokens();
   window.localStorage.clear();
+  pushMock.mockClear();
   setTokens({ access_token: "a", refresh_token: "r" });
   server.use(
     http.get(url("/auth/me"), () =>
@@ -102,8 +104,41 @@ describe("VagaPage", () => {
     await screen.findByRole("heading", { name: "Backend Dev" });
 
     const section = screen.getByRole("heading", { name: "Adaptações" }).closest("section")!;
-    expect(await within(section).findByText("completed")).toBeInTheDocument();
+    const link = await within(section).findByRole("link");
+    expect(link).toHaveAttribute("href", "/adaptacoes/a1");
+    expect(within(link).getByText("Concluída")).toBeInTheDocument(); // status pt-BR
     expect(within(section).getByText("75%")).toBeInTheDocument();
+  });
+
+  it("disparar adaptação cria e navega para /adaptacoes/{id}", async () => {
+    server.use(
+      http.get(url("/jobs/j1"), () => HttpResponse.json(baseJob)),
+      http.post(url("/adaptations"), () =>
+        HttpResponse.json(
+          { adaptation_id: "ad9", status: "pending", estimated_time_seconds: 20 },
+          { status: 202 },
+        ),
+      ),
+    );
+    renderPage();
+    await screen.findByRole("heading", { name: "Backend Dev" });
+
+    await userEvent.click(screen.getByRole("button", { name: "Gerar currículo adaptado" }));
+    await vi.waitFor(() => expect(pushMock).toHaveBeenCalledWith("/adaptacoes/ad9"));
+  });
+
+  it("rate limit no disparo mostra mensagem pt-BR (429)", async () => {
+    server.use(
+      http.get(url("/jobs/j1"), () => HttpResponse.json(baseJob)),
+      http.post(url("/adaptations"), () =>
+        HttpResponse.json(errorEnvelope("RATE_LIMIT_EXCEEDED", "x"), { status: 429 }),
+      ),
+    );
+    renderPage();
+    await screen.findByRole("heading", { name: "Backend Dev" });
+
+    await userEvent.click(screen.getByRole("button", { name: "Gerar currículo adaptado" }));
+    expect(await screen.findByText(/limite de adaptações por hora/i)).toBeInTheDocument();
   });
 
   it("vaga inexistente mostra estado not found", async () => {
