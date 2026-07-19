@@ -12,6 +12,8 @@ Regras de manutenção (verificadas pelo `/code-review-task` e pelo docs-guard d
 ## [Unreleased]
 
 ### Added
+- Substituído o botão "Sair" por "Voltar" na tela de perfil (`/perfil`), redirecionando o usuário para `/vagas` sem deslogar do sistema. (SKC-43)
+- Garantido que salvar as alterações de perfil mantém o usuário logado e exibe o feedback "Perfil atualizado." na tela. (SKC-43)
 - Fluxo de adaptação (ADP+PDF): ação "Adaptar" na vaga (`POST /adaptations`, idioma pt/en, auto-seleção de skills) → rota `/adaptacoes/[id]` com **polling de backoff (1s→5s) até estado terminal** (`completed`/`failed`) e cancelamento ao desmontar/navegar; em `completed` exibe aderência, gaps por severidade, recomendações, ajuste de tom e custo; em `failed` mostra erro pt-BR do `error.code`. Download e regeneração do PDF (outro idioma, sem IA) com versões listadas. As adaptações da vaga (SKC-26) agora linkam para o detalhe com status em pt-BR. (SKC-27)
 - Camada `src/lib/adaptations/`: tipos (status terminal, `Language`, `Gap`/`AiSuggestions`/`Cost`/`ResumeDocument`, rótulos pt-BR), chamadas tipadas (`api.ts`), hook de polling race-safe (`use-adaptation-poll.ts`), mapa de `error.code` (FDD-ADP §6 + FDD-PDF §6) → pt-BR e util de download (`save-blob.ts`). (SKC-27)
 - Componentes `src/components/adaptations/`: `AdaptTrigger`, `AdaptationResult`, `ResumeDocuments`. (SKC-27)

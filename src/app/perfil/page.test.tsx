@@ -7,9 +7,13 @@ import { clearTokens, setTokens } from "@/lib/auth-tokens";
 import { server } from "@/test/msw/server";
 import { http, HttpResponse, url } from "@/test/msw/handlers";
 
-const { replaceMock } = vi.hoisted(() => ({ replaceMock: vi.fn() }));
+const { replaceMock, pushMock } = vi.hoisted(() => ({
+  replaceMock: vi.fn(),
+  pushMock: vi.fn(),
+}));
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push: vi.fn(), replace: replaceMock }),
+  useRouter: () => ({ push: pushMock, replace: replaceMock }),
+  usePathname: () => "/perfil",
 }));
 
 const PROFILE = {
@@ -32,6 +36,7 @@ beforeEach(() => {
   clearTokens();
   window.localStorage.clear();
   replaceMock.mockReset();
+  pushMock.mockReset();
 });
 afterEach(() => cleanup());
 
@@ -82,6 +87,28 @@ describe("PerfilPage (autenticado)", () => {
     await user.click(screen.getByRole("button", { name: "Excluir conta" }));
     await user.click(screen.getByRole("button", { name: "Confirmar exclusão" }));
     await waitFor(() => expect(replaceMock).toHaveBeenCalledWith("/login"));
+  });
+
+  it("clicar em Voltar redireciona para /vagas sem deslogar", async () => {
+    renderPerfil();
+    await screen.findByLabelText("Nome completo");
+    const user = userEvent.setup();
+    await user.click(screen.getByRole("button", { name: "Voltar" }));
+    expect(pushMock).toHaveBeenCalledWith("/vagas");
+    expect(replaceMock).not.toHaveBeenCalled();
+  });
+
+  it("salvar mantem o usuario logado e mostra feedback", async () => {
+    server.use(
+      http.put(url("/auth/me"), () => HttpResponse.json({ ...PROFILE, headline: "Dev" })),
+    );
+    renderPerfil();
+    await screen.findByLabelText("Nome completo");
+    const user = userEvent.setup();
+    await user.click(screen.getByRole("button", { name: "Salvar" }));
+
+    expect(await screen.findByRole("status")).toHaveTextContent(/atualizado/i);
+    expect(replaceMock).not.toHaveBeenCalled();
   });
 });
 
