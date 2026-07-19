@@ -35,7 +35,7 @@ beforeEach(() => {
 afterEach(() => cleanup());
 
 describe("LoginPage", () => {
-  it("login bem-sucedido redireciona para /perfil", async () => {
+  it("login bem-sucedido redireciona para /vagas", async () => {
     server.use(
       http.post(url("/auth/login"), () =>
         HttpResponse.json({
@@ -47,7 +47,7 @@ describe("LoginPage", () => {
     );
     renderLogin();
     await fillAndSubmit();
-    await waitFor(() => expect(pushMock).toHaveBeenCalledWith("/perfil"));
+    await waitFor(() => expect(pushMock).toHaveBeenCalledWith("/vagas"));
   });
 
   it("credenciais inválidas mostram mensagem pt-BR sem vazar stack", async () => {

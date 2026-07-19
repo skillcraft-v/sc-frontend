@@ -36,7 +36,7 @@ beforeEach(() => {
 afterEach(() => cleanup());
 
 describe("RegistroPage", () => {
-  it("registro com auto-login redireciona para /perfil", async () => {
+  it("registro com auto-login redireciona para /vagas", async () => {
     server.use(
       http.post(url("/auth/register"), () =>
         HttpResponse.json(
@@ -51,7 +51,7 @@ describe("RegistroPage", () => {
     );
     renderRegistro();
     await fillAndSubmit();
-    await waitFor(() => expect(pushMock).toHaveBeenCalledWith("/perfil"));
+    await waitFor(() => expect(pushMock).toHaveBeenCalledWith("/vagas"));
   });
 
   it("e-mail já cadastrado mostra mensagem pt-BR", async () => {
