@@ -12,6 +12,9 @@ Regras de manutenção (verificadas pelo `/code-review-task` e pelo docs-guard d
 ## [Unreleased]
 
 ### Added
+- Header de navegação global (Vagas, Skills, Carreira, Perfil, Sair) integrado no RequireAuth para renderização automática em rotas autenticadas, com design responsivo e visual premium. (SKC-42)
+- Redirecionamento pós-login e pós-registro atualizado de `/perfil` para a página principal de Vagas (`/vagas`) para melhor usabilidade e fluidez. (SKC-42)
+- Especificação do fluxo de navegação e mapeamento de rotas salva em [docs/navigation-flow.md](file:///Users/victorgoncalvesmarques/Projects/lab/skillcraft/sc-frontend/docs/navigation-flow.md). (SKC-42)
 - Fluxo de adaptação (ADP+PDF): ação "Adaptar" na vaga (`POST /adaptations`, idioma pt/en, auto-seleção de skills) → rota `/adaptacoes/[id]` com **polling de backoff (1s→5s) até estado terminal** (`completed`/`failed`) e cancelamento ao desmontar/navegar; em `completed` exibe aderência, gaps por severidade, recomendações, ajuste de tom e custo; em `failed` mostra erro pt-BR do `error.code`. Download e regeneração do PDF (outro idioma, sem IA) com versões listadas. As adaptações da vaga (SKC-26) agora linkam para o detalhe com status em pt-BR. (SKC-27)
 - Camada `src/lib/adaptations/`: tipos (status terminal, `Language`, `Gap`/`AiSuggestions`/`Cost`/`ResumeDocument`, rótulos pt-BR), chamadas tipadas (`api.ts`), hook de polling race-safe (`use-adaptation-poll.ts`), mapa de `error.code` (FDD-ADP §6 + FDD-PDF §6) → pt-BR e util de download (`save-blob.ts`). (SKC-27)
 - Componentes `src/components/adaptations/`: `AdaptTrigger`, `AdaptationResult`, `ResumeDocuments`. (SKC-27)

@@ -23,7 +23,7 @@ export default function LoginPage() {
     setError(null);
     try {
       await login({ email, password });
-      router.push("/perfil");
+      router.push("/vagas");
     } catch (err) {
       setError(authErrorMessage(err));
       setPending(false);

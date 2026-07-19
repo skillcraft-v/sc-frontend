@@ -8,6 +8,7 @@
 import { useEffect, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/lib/auth/session";
+import { Header } from "@/components/ui/Header";
 
 export function RequireAuth({ children }: { children: ReactNode }) {
   const { status } = useSession();
@@ -27,5 +28,10 @@ export function RequireAuth({ children }: { children: ReactNode }) {
     );
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      <Header />
+      {children}
+    </>
+  );
 }

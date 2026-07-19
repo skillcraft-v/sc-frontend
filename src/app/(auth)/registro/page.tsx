@@ -26,7 +26,7 @@ export default function RegistroPage() {
     setFields({});
     try {
       await register({ email, password, full_name: fullName });
-      router.push("/perfil");
+      router.push("/vagas");
     } catch (err) {
       setError(authErrorMessage(err));
       setFields(fieldErrors(err));

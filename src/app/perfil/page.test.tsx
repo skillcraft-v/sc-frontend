@@ -10,6 +10,7 @@ import { http, HttpResponse, url } from "@/test/msw/handlers";
 const { replaceMock } = vi.hoisted(() => ({ replaceMock: vi.fn() }));
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn(), replace: replaceMock }),
+  usePathname: () => "/perfil",
 }));
 
 const PROFILE = {
