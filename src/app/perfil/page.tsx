@@ -74,8 +74,8 @@ function ProfileContent() {
     <main className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center gap-6 px-6 py-12">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-bold tracking-tight">Meu perfil</h1>
-        <button onClick={logout} className="text-sm font-medium underline">
-          Sair
+        <button onClick={() => router.push("/vagas")} className="text-sm font-medium underline">
+          Voltar
         </button>
       </div>
       <p className="text-sm text-foreground/80">{current.email}</p>
