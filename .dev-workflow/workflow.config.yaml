@@ -1,0 +1,118 @@
+# dev-workflow — configuração por projeto (sc-frontend)
+# Gerado por /setup-project. Este arquivo é a ÚNICA fonte de parâmetros
+# das skills /task, /code-review-task e /docs-sync.
+
+schema_version: 1
+
+platforms:
+  - claude-code
+  - antigravity
+
+project:
+  name: sc-frontend
+  language: pt-BR
+  repo_role: frontend
+  canonical_docs_path: "../sc-api" # PRD, domain-context, HLD, ADRs, FDDs, API_SPEC vivem no repo irmão
+
+tracker:
+  provider: jira
+  mcp_server: MCP_DOCKER
+  project_key: SKC
+  cloud_id: a5d8b89b-37c5-4fd9-b536-5c5f662822fe
+  url: https://goncalvesmarques.atlassian.net
+  ticket_prefix_guard: "[backend]" # tickets [backend]/[database] pertencem ao sc-api; este repo só implementa [frontend]
+  columns:
+    todo: "To Do"
+    in_progress: "In Progress"
+    in_review: "In Review"
+    done: "Done"
+
+git:
+  base_branch: development
+  branch_pattern: "feat/{ticket}-{slug}"
+  commit_pattern: "{type}({ticket}): {message}"
+
+commands:
+  lint: "npm run lint"
+  typecheck: "npm run typecheck"
+  test: "npm test"
+  coverage: "npm run test:coverage"
+  build: "npm run build"
+  e2e: "npm run e2e"
+
+quality_gates:
+  review_pack: react-next
+  coverage_threshold: 80 # espelha thresholds do vitest.config.ts (gate real é o tooling)
+  coverage_strict_paths:
+    "src/lib": 90 # lógica pura e crítica (cliente da API, tokens)
+
+domains: # carga JIT de contexto por domínio do ticket (FDDs canônicos no sc-api)
+  - prefix: USR
+    fdd: "../sc-api/docs/fdds/fdd-usr-*.md"
+  - prefix: SKL
+    fdd: "../sc-api/docs/fdds/fdd-skl-*.md"
+  - prefix: CAR
+    fdd: "../sc-api/docs/fdds/fdd-car-*.md"
+  - prefix: JOB
+    fdd: "../sc-api/docs/fdds/fdd-job-*.md"
+  - prefix: ADP
+    fdd: "../sc-api/docs/fdds/fdd-adp-*.md"
+  - prefix: PDF
+    fdd: "../sc-api/docs/fdds/fdd-pdf-*.md"
+
+context_files: # SEMPRE carregados na Fase 1 do /task
+  - AGENTS.md
+  - ../sc-api/docs/domain-context.md
+
+docs_map: # /docs-sync aplica; /code-review-task verifica (docs-guard.sh é a rede determinística no CI)
+  - if_diff_touches: "src/**"
+    update: ["CHANGELOG.md"]
+    severity: blocker
+  - if_diff_touches: "package.json"
+    update: ["CHANGELOG.md"] # seção Dependencies
+    severity: blocker
+  - if_diff_touches: "src/app/**"
+    update: ["docs/navigation-flow.md"]
+    severity: warning
+  - if_diff_touches: "e2e/**"
+    update: ["docs/testing-strategy.md"]
+    severity: warning
+
+documentation_policy:
+  changelog:
+    required_for_every_task: true
+    path: CHANGELOG.md
+    section: Unreleased
+    require_ticket_link: true # ex: (SKC-XX) → https://goncalvesmarques.atlassian.net/browse/SKC-XX
+    allowed_categories: [Added, Changed, Fixed, Security, Deprecated, Removed, Maintenance]
+  technical:
+    source_of_truth: repository
+    paths: [README.md, docs/]
+  functional:
+    source_of_truth: confluence # docs canônicos de negócio vivem no sc-api; espelho no space SKC
+  delivery_log:
+    required_for_every_task: true
+    page_title: "Histórico de entregas"
+    page_id: "17858588" # space SKC — registro por task dos repos sc-api e sc-frontend
+
+evidence:
+  type: screenshot # screenshot/GIF + passos de reprodução
+  path: "" # anexada ao corpo do PR (não versionada no repo)
+
+confluence:
+  enabled: true
+  mcp_server: MCP_DOCKER
+  space: SKC
+  business_docs: [] # espelhamento de PRD/domain-context é responsabilidade do sc-api (repo canônico)
+
+dod_extra:
+  - "[ ] responsivo ≥ 360px nas telas tocadas (NFR-010)"
+  - "[ ] textos de UI novos em pt-BR"
+  - "[ ] nenhuma regra de negócio no frontend — autoridade é o sc-api (P-006)"
+  - "[ ] tokens/segredos nunca em log/console; única env pública é NEXT_PUBLIC_API_URL"
+  - "[ ] e2e verde em auth/adaptação quando a task tocar esses fluxos"
+
+integrations:
+  atlassian:
+    capability_discovery: true
+    fallback: local

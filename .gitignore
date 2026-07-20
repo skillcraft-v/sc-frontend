@@ -39,3 +39,6 @@ task-brief.yaml
 
 # vercel
 .vercel
+
+# dev-workflow (estado retomável de /task; nunca versionado)
+.dev-workflow/state/
