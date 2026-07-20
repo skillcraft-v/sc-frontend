@@ -1,0 +1,11 @@
+{
+  // tsconfig só para o bundle do design-sync (cfg.tsconfig): mantém o alias @/
+  // do repo e adiciona shims para módulos do runtime Next ausentes no browser.
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["../src/*"],
+      "next/link": ["./shims/next-link.tsx"],
+      "next/navigation": ["./shims/next-navigation.ts"]
+    }
+  }
+}
