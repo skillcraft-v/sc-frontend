@@ -40,7 +40,10 @@ task-brief.yaml
 # vercel
 .vercel
 
-# design-sync machine state
+# dev-workflow (estado retomável de /task; nunca versionado)
+.dev-workflow/state/
+
+# design-sync machine state (durable inputs live in .design-sync/, committed)
 .ds-sync/
 ds-bundle/
 .design-sync/.cache/

@@ -1,0 +1,46 @@
+{
+  "projectId": "15b88301-14d7-4f35-9de1-3eb426c62c8f",
+  "shape": "package",
+  "pkg": "sc-frontend",
+  "globalName": "SkillCraft",
+  "srcDir": "src",
+  "tsconfig": ".design-sync/tsconfig.json",
+  "buildCmd": "node .design-sync/compile-css.mjs",
+  "cssEntry": ".design-sync/.cache/tailwind.css",
+  "entry": ".design-sync/entry.tsx",
+  "guidelinesGlob": [],
+  "readmeHeader": ".design-sync/conventions.md",
+  "libOverrides": {
+    "dts.mjs": "*Manager suffix heuristic drops real components (ProjectSkillsManager, EvidenceManager)"
+  },
+  "overrides": {
+    "Header": { "cardMode": "column" }
+  },
+  "componentSrcMap": {
+    "Alert": "src/components/ui/Alert.tsx",
+    "Header": "src/components/ui/Header.tsx",
+    "SessionProvider": null,
+    "Button": "src/components/ui/Button.tsx",
+    "Checkbox": "src/components/ui/Checkbox.tsx",
+    "Field": "src/components/ui/Field.tsx",
+    "Select": "src/components/ui/Select.tsx",
+    "Textarea": "src/components/ui/Textarea.tsx",
+    "JobStatusBadge": "src/components/jobs/JobStatusBadge.tsx",
+    "JobFilters": "src/components/jobs/JobFilters.tsx",
+    "JobForm": "src/components/jobs/JobForm.tsx",
+    "StatusChanger": "src/components/jobs/StatusChanger.tsx",
+    "SkillFilters": "src/components/skills/SkillFilters.tsx",
+    "SkillForm": "src/components/skills/SkillForm.tsx",
+    "EvidenceManager": "src/components/skills/EvidenceManager.tsx",
+    "CareerSection": "src/components/career/CareerSection.tsx",
+    "CertificationForm": "src/components/career/CertificationForm.tsx",
+    "CertificationItem": "src/components/career/CertificationItem.tsx",
+    "EducationForm": "src/components/career/EducationForm.tsx",
+    "EducationItem": "src/components/career/EducationItem.tsx",
+    "ProjectForm": "src/components/career/ProjectForm.tsx",
+    "ProjectSkillsManager": "src/components/career/ProjectSkillsManager.tsx",
+    "AdaptTrigger": "src/components/adaptations/AdaptTrigger.tsx",
+    "AdaptationResult": "src/components/adaptations/AdaptationResult.tsx",
+    "ResumeDocuments": "src/components/adaptations/ResumeDocuments.tsx"
+  }
+}
