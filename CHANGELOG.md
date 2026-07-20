@@ -12,6 +12,8 @@ Regras de manutenção (verificadas pelo `/code-review-task` e pelo docs-guard d
 ## [Unreleased]
 
 ### Added
+- Substituído o botão "Sair" por "Voltar" na tela de perfil (`/perfil`), redirecionando o usuário para `/vagas` sem deslogar do sistema. (SKC-43)
+- Garantido que salvar as alterações de perfil mantém o usuário logado e exibe o feedback "Perfil atualizado." na tela. (SKC-43)
 - Header de navegação global (Vagas, Skills, Carreira, Perfil, Sair) integrado no RequireAuth para renderização automática em rotas autenticadas, com design responsivo e visual premium. (SKC-42)
 - Redirecionamento pós-login e pós-registro atualizado de `/perfil` para a página principal de Vagas (`/vagas`) para melhor usabilidade e fluidez. (SKC-42)
 - Especificação do fluxo de navegação e mapeamento de rotas salva em [docs/navigation-flow.md](file:///Users/victorgoncalvesmarques/Projects/lab/skillcraft/sc-frontend/docs/navigation-flow.md). (SKC-42)
