@@ -37,20 +37,20 @@ export function CareerSection({
       </div>
 
       {adding ? (
-        <div className="rounded-md border border-foreground/15 p-4">
+        <div className="rounded-md border border-line p-4">
           {renderAddForm(() => setAdding(false))}
         </div>
       ) : null}
 
       {status === "loading" ? (
-        <p role="status" className="text-sm text-foreground/80">
+        <p role="status" className="text-sm text-soft">
           Carregando…
         </p>
       ) : null}
 
       {status === "error" ? (
         <div className="flex items-center gap-3">
-          <p role="alert" className="text-sm text-red-700 dark:text-red-400">
+          <p role="alert" className="text-sm text-rejected-fg">
             Não foi possível carregar.
           </p>
           <button onClick={onReload} className="text-sm font-medium underline">
@@ -60,7 +60,7 @@ export function CareerSection({
       ) : null}
 
       {status === "success" && isEmpty ? (
-        <p className="text-sm text-foreground/80">{emptyLabel}</p>
+        <p className="text-sm text-soft">{emptyLabel}</p>
       ) : null}
 
       {children}

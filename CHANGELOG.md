@@ -11,7 +11,18 @@ Regras de manutenção (verificadas pelo `/code-review-task` e pelo docs-guard d
 
 ## [Unreleased]
 
+### Changed
+- **Fundação do Redesign Editorial (Fase 6):** `src/app/globals.css` passa a expor o vocabulário editorial como tema do Tailwind v4 (`@theme`) — superfícies (`paper`, `card`, `ink`, `ink-inverse`, `soft`, `line`, `hairline`, `hover-bg`, `subtle-bg`), as 6 cores do funil de vagas (`<status>-fg/-line/-tint`), violeta de automação, sucesso, escala tipográfica, radii, sombras e os keyframes `scIn`/`scGrow`/`scPulse`. Valores conferidos contra `RedesignProposal.dc.html`. (SKC-46)
+- Webfonts trocadas de Geist para **Newsreader** (display, eixo óptico) + **Public Sans** (corpo) via `next/font/google`, sem `@import` de CDN. As variáveis das fontes ficam no `<html>` — os tokens `--font-sans`/`--font-display` são declarados em `:root` e não resolveriam a partir do `<body>`. (SKC-46)
+- Migração mecânica dos tokens antigos (`--background`/`--foreground`) para o novo vocabulário em 31 arquivos de `src/app`, `src/components` e `src/lib`, sem mudança de layout. `JobStatusBadge` passa a usar os tokens do funil. (SKC-46)
+- Primitivos compartilhados (`Button`, `Field`, `Select`, `Textarea`) adotam o radius de controle (10px) e a sombra de botão primário do handoff. (SKC-46)
+- Contraste corrigido no chip `<code>` da home: `text-soft` sobre `hover-bg` dava 4.47:1 (reprova AA a 12px) — passa a usar `ink`. Restrição documentada no token. (SKC-46)
+
+### Removed
+- **Dark mode removido** (bloco `prefers-color-scheme` e todas as variantes `dark:`). O redesign editorial define uma paleta única; o dark mode será reintroduzido seguindo o S.O. do usuário em task futura da Fase 6. (SKC-46)
+
 ### Added
+- Smoke tests de renderização para as 3 telas que ainda não tinham (`/skills/[id]`, `/skills/nova`, `/carreira/projetos/[id]`) e E2E `e2e/tema.spec.ts` protegendo a fiação de webfonts e paleta contra regressão nas tasks T36+. (SKC-46)
 - Substituído o botão "Sair" por "Voltar" na tela de perfil (`/perfil`), redirecionando o usuário para `/vagas` sem deslogar do sistema. (SKC-43)
 - Garantido que salvar as alterações de perfil mantém o usuário logado e exibe o feedback "Perfil atualizado." na tela. (SKC-43)
 - Header de navegação global (Vagas, Skills, Carreira, Perfil, Sair) integrado no RequireAuth para renderização automática em rotas autenticadas, com design responsivo e visual premium. (SKC-42)

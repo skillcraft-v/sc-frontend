@@ -16,11 +16,11 @@ export function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-foreground/10 bg-background/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full border-b border-line bg-paper/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-3xl items-center justify-between px-6">
         <Link
           href="/vagas"
-          className="text-lg font-bold tracking-tight text-foreground transition-opacity hover:opacity-90"
+          className="text-lg font-bold tracking-tight text-ink transition-opacity hover:opacity-90"
         >
           SkillCraft
         </Link>
@@ -33,8 +33,8 @@ export function Header() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className={`text-sm font-medium transition-colors hover:text-foreground ${
-                      isActive ? "text-foreground underline decoration-2 underline-offset-4" : "text-foreground/75"
+                    className={`text-sm font-medium transition-colors hover:text-ink ${
+                      isActive ? "text-ink underline decoration-2 underline-offset-4" : "text-soft"
                     }`}
                   >
                     {link.label}
@@ -44,11 +44,11 @@ export function Header() {
             })}
           </ul>
 
-          <div className="h-4 w-px bg-foreground/15" aria-hidden="true" />
+          <div className="h-4 w-px bg-hairline" aria-hidden="true" />
 
           <button
             onClick={logout}
-            className="text-sm font-medium text-red-600 transition-colors hover:text-red-500 dark:text-red-400 dark:hover:text-red-300"
+            className="text-sm font-medium text-rejected-fg transition-opacity hover:opacity-90"
           >
             Sair
           </button>

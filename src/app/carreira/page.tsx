@@ -68,16 +68,16 @@ function Career() {
         )}
       >
         {projectError ? (
-          <p role="alert" className="text-sm text-red-700 dark:text-red-400">
+          <p role="alert" className="text-sm text-rejected-fg">
             {projectError}
           </p>
         ) : null}
         <ul className="flex flex-col gap-3">
           {projects.items.map((p) => (
-            <li key={p.id} className="flex items-center justify-between gap-3 rounded-md border border-foreground/15 px-4 py-3">
+            <li key={p.id} className="flex items-center justify-between gap-3 rounded-md border border-line px-4 py-3">
               <Link href={`/carreira/projetos/${p.id}`} className="text-sm hover:underline">
                 <span className="font-medium">{p.title}</span>
-                <span className="text-foreground/80">
+                <span className="text-soft">
                   {" "}
                   · {p.start_date} – {p.end_date ?? "atual"}
                 </span>
@@ -85,7 +85,7 @@ function Career() {
               <button
                 onClick={() => handleDeleteProject(p.id)}
                 aria-label={`Excluir projeto ${p.title}`}
-                className="text-sm font-medium text-red-700 underline dark:text-red-400"
+                className="text-sm font-medium text-rejected-fg underline"
               >
                 Excluir
               </button>

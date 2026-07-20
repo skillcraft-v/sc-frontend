@@ -34,7 +34,7 @@ function Adaptacao() {
       </div>
 
       {phase === "loading" ? (
-        <p role="status" className="text-sm text-foreground/80">
+        <p role="status" className="text-sm text-soft">
           Carregando adaptação…
         </p>
       ) : null}
@@ -45,8 +45,8 @@ function Adaptacao() {
 
       {phase === "processing" && adaptation ? (
         <div className="flex items-center gap-3" role="status">
-          <span className="h-4 w-4 animate-spin rounded-full border-2 border-foreground/30 border-t-foreground" />
-          <p className="text-sm text-foreground/80">
+          <span className="h-4 w-4 animate-spin rounded-full border-2 border-line border-t-ink" />
+          <p className="text-sm text-soft">
             {STATUS_LABELS[adaptation.status]}… isso costuma levar alguns segundos.
           </p>
         </div>

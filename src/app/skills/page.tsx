@@ -24,7 +24,7 @@ function SkillsList() {
         <h1 className="text-2xl font-bold tracking-tight">Skills</h1>
         <Link
           href="/skills/nova"
-          className="rounded-md bg-foreground px-4 py-2 text-sm font-medium text-background hover:opacity-90"
+          className="rounded-md bg-ink px-4 py-2 text-sm font-medium text-ink-inverse hover:opacity-90"
         >
           Nova skill
         </Link>
@@ -33,14 +33,14 @@ function SkillsList() {
       <SkillFilters onApply={applyFilters} />
 
       {status === "loading" ? (
-        <p role="status" className="text-sm text-foreground/80">
+        <p role="status" className="text-sm text-soft">
           Carregando skills…
         </p>
       ) : null}
 
       {status === "error" ? (
         <div className="flex items-center gap-3">
-          <p role="alert" className="text-sm text-red-700 dark:text-red-400">
+          <p role="alert" className="text-sm text-rejected-fg">
             Não foi possível carregar as skills.
           </p>
           <button onClick={reload} className="text-sm font-medium underline">
@@ -50,7 +50,7 @@ function SkillsList() {
       ) : null}
 
       {status === "success" && data && data.items.length === 0 ? (
-        <p className="text-sm text-foreground/80">
+        <p className="text-sm text-soft">
           Nenhuma skill encontrada. Que tal{" "}
           <Link href="/skills/nova" className="font-medium underline">
             criar a primeira
@@ -66,10 +66,10 @@ function SkillsList() {
               <li key={skill.id}>
                 <Link
                   href={`/skills/${skill.id}`}
-                  className="flex flex-col gap-1 rounded-md border border-foreground/15 px-4 py-3 hover:border-foreground/40"
+                  className="flex flex-col gap-1 rounded-md border border-line px-4 py-3 hover:border-ink"
                 >
                   <span className="font-medium">{skill.title_pt}</span>
-                  <span className="text-sm text-foreground/80">
+                  <span className="text-sm text-soft">
                     {CATEGORY_LABELS[skill.category]} · {PROFICIENCY_LABELS[skill.proficiency]}
                     {skill.tags.length ? ` · ${skill.tags.join(", ")}` : ""}
                   </span>
@@ -87,7 +87,7 @@ function SkillsList() {
               >
                 Anterior
               </button>
-              <span className="text-sm text-foreground/80">
+              <span className="text-sm text-soft">
                 Página {page} de {totalPages}
               </span>
               <button

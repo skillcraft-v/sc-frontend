@@ -19,14 +19,14 @@ export function Select({ id, label, options, error, placeholder, ...selectProps 
   const errorId = `${id}-error`;
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-sm font-medium text-foreground/90">
+      <label htmlFor={id} className="text-sm font-medium text-ink">
         {label}
       </label>
       <select
         id={id}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? errorId : undefined}
-        className="rounded-md border border-foreground/30 bg-transparent px-3 py-2 text-sm outline-none focus:border-foreground/70 focus:ring-2 focus:ring-foreground/20 aria-[invalid=true]:border-red-600"
+        className="rounded-control border border-line bg-transparent px-3 py-2 text-sm outline-none focus:border-ink focus:ring-2 focus:ring-ink/20 aria-[invalid=true]:border-rejected-fg"
         {...selectProps}
       >
         {placeholder !== undefined ? <option value="">{placeholder}</option> : null}
@@ -37,7 +37,7 @@ export function Select({ id, label, options, error, placeholder, ...selectProps 
         ))}
       </select>
       {error ? (
-        <p id={errorId} className="text-sm text-red-700 dark:text-red-400">
+        <p id={errorId} className="text-sm text-rejected-fg">
           {error}
         </p>
       ) : null}

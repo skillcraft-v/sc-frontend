@@ -86,7 +86,7 @@ export function JobForm({ initial, submitLabel, onSubmit }: JobFormProps) {
           error={fields.description}
           onChange={(e) => setDescription(e.target.value)}
         />
-        <p className="text-xs text-foreground/70">
+        <p className="text-xs text-soft">
           {remaining > 0
             ? `Cole a descrição da vaga — faltam ${remaining} caractere(s) (mínimo ${MIN_DESCRIPTION_LENGTH}).`
             : `${description.trim().length} caracteres.`}

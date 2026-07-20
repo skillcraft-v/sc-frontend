@@ -45,11 +45,11 @@ describe("Header Component", () => {
     const { rerender } = render(<Header />);
     
     let skillsLink = screen.getByRole("link", { name: "Skills" });
-    expect(skillsLink.className).toContain("text-foreground");
+    expect(skillsLink.className).toContain("text-ink");
     expect(skillsLink.className).toContain("underline");
 
     let vagasLink = screen.getByRole("link", { name: "Vagas" });
-    expect(vagasLink.className).toContain("text-foreground/75");
+    expect(vagasLink.className).toContain("text-soft");
     expect(vagasLink.className).not.toContain("underline");
 
     // Caso de rota filha: /vagas/v1
@@ -57,11 +57,11 @@ describe("Header Component", () => {
     rerender(<Header />);
 
     skillsLink = screen.getByRole("link", { name: "Skills" });
-    expect(skillsLink.className).toContain("text-foreground/75");
+    expect(skillsLink.className).toContain("text-soft");
     expect(skillsLink.className).not.toContain("underline");
 
     vagasLink = screen.getByRole("link", { name: "Vagas" });
-    expect(vagasLink.className).toContain("text-foreground");
+    expect(vagasLink.className).toContain("text-ink");
     expect(vagasLink.className).toContain("underline");
   });
 

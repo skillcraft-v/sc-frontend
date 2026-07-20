@@ -65,7 +65,7 @@ function EditarProjeto() {
 
   if (state === "loading") {
     return (
-      <p role="status" className="p-6 text-center text-foreground/80">
+      <p role="status" className="p-6 text-center text-soft">
         Carregando projeto…
       </p>
     );
@@ -74,7 +74,7 @@ function EditarProjeto() {
   if (state === "notfound") {
     return (
       <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-4 px-6 py-12">
-        <p role="alert" className="text-sm text-red-700 dark:text-red-400">
+        <p role="alert" className="text-sm text-rejected-fg">
           Projeto não encontrado.
         </p>
         <Link href="/carreira" className="text-sm font-medium underline">
@@ -87,7 +87,7 @@ function EditarProjeto() {
   if (state === "error" || !project) {
     return (
       <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-4 px-6 py-12">
-        <p role="alert" className="text-sm text-red-700 dark:text-red-400">
+        <p role="alert" className="text-sm text-rejected-fg">
           Não foi possível carregar o projeto.
         </p>
       </main>
@@ -109,11 +109,11 @@ function EditarProjeto() {
 
       <ProjectSkillsManager projectId={project.id} initialLinks={project.skills ?? []} />
 
-      <section className="flex flex-col gap-2 border-t border-foreground/15 pt-6">
-        <h2 className="text-sm font-semibold text-foreground/90">Excluir projeto</h2>
+      <section className="flex flex-col gap-2 border-t border-hairline pt-6">
+        <h2 className="text-sm font-semibold text-ink">Excluir projeto</h2>
         <button
           onClick={handleDelete}
-          className="self-start text-sm font-medium text-red-700 underline dark:text-red-400"
+          className="self-start text-sm font-medium text-rejected-fg underline"
         >
           Excluir este projeto
         </button>

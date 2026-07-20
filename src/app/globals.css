@@ -1,24 +1,164 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #111827;
-}
+/*
+ * Fundação visual do Redesign Editorial (SKC-46 / T35).
+ * Fonte da verdade dos valores: design_handoff_editorial_redesign/RedesignProposal.dc.html
+ *
+ * Tema único (light). O dark mode foi removido nesta task e será reintroduzido
+ * seguindo o S.O. do usuário em task futura da Fase 6.
+ */
+@theme {
+  /* --- Superfícies e texto --- */
+  --color-paper: #f5f4f1; /* fundo do app */
+  --color-card: #ffffff; /* superfícies */
+  --color-ink: #191817; /* texto e ação primária */
+  --color-ink-inverse: #f5f4f1; /* texto sobre ink */
+  /* texto secundário — 4.9:1 sobre --paper (AA). NÃO usar sobre --hover-bg
+     em texto pequeno: cai para 4.47:1 e reprova no axe; ali use --ink. */
+  --color-soft: #6e6a63;
+  --color-line: #e5e2db; /* bordas */
+  --color-hairline: #f0eee8; /* divisores internos */
+  --color-hover-bg: #eceae4; /* hover de nav e chips */
+  --color-subtle-bg: #fcfbf9; /* inputs, painéis discretos, hover de linha */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* --- Status do funil de vagas (fg = texto, line = borda, tint = fundo) --- */
+  --color-saved-fg: #52525b;
+  --color-saved-line: rgba(82, 82, 91, 0.3);
+  --color-saved-tint: rgba(82, 82, 91, 0.09);
+
+  --color-applied-fg: #1d4ed8;
+  --color-applied-line: rgba(29, 78, 216, 0.3);
+  --color-applied-tint: rgba(29, 78, 216, 0.08);
+
+  --color-interviewing-fg: #b45309;
+  --color-interviewing-line: rgba(180, 83, 9, 0.3);
+  --color-interviewing-tint: rgba(180, 83, 9, 0.09);
+
+  --color-offer-fg: #6d28d9;
+  --color-offer-line: rgba(109, 40, 217, 0.3);
+  --color-offer-tint: rgba(109, 40, 217, 0.08);
+
+  --color-accepted-fg: #15803d;
+  --color-accepted-line: rgba(21, 128, 61, 0.3);
+  --color-accepted-tint: rgba(21, 128, 61, 0.08);
+
+  --color-rejected-fg: #b91c1c;
+  --color-rejected-line: rgba(185, 28, 28, 0.3);
+  --color-rejected-tint: rgba(185, 28, 28, 0.08);
+
+  /* --- Automação e sugestões (violeta) --- */
+  --color-auto-fg: #5b21b6;
+  --color-auto-solid: #6d28d9;
+  --color-auto-line: rgba(109, 40, 217, 0.25);
+  --color-auto-tint: rgba(109, 40, 217, 0.05);
+  --color-auto-chip: rgba(109, 40, 217, 0.3);
+
+  /* --- Sucesso (banner de resultado da adaptação) --- */
+  --color-success-fg: #166534;
+  --color-success-line: rgba(21, 128, 61, 0.25);
+  --color-success-tint: rgba(21, 128, 61, 0.06);
+
+  /* --- Tipografia --- */
+  --font-display: var(--font-newsreader), Georgia, serif;
+  --font-sans: var(--font-public-sans), system-ui, sans-serif;
+
+  /* Escala editorial (handoff §Tipografia) */
+  --text-micro: 11.5px;
+  --text-meta: 12.5px;
+  --text-secondary: 13px;
+  --text-body: 14px;
+  --text-body-lg: 14.5px;
+  --text-row: 15px;
+  --text-card-title: 17.5px;
+  --text-h3: 19px;
+  --text-h2: 20px;
+  --text-score: 28px;
+  --text-h1: 32px;
+
+  /* --- Radii --- */
+  --radius-mark: 9px; /* logo mark */
+  --radius-control: 10px; /* botões, inputs, itens de nav */
+  --radius-chip: 12px;
+  --radius-card: 14px;
+  --radius-card-lg: 16px;
+  --radius-panel: 18px; /* container principal da adaptação */
+
+  /* --- Sombras --- */
+  --shadow-rest: 0 1px 2px rgba(25, 24, 23, 0.04); /* repouso de cards */
+  --shadow-lift: 0 6px 20px rgba(25, 24, 23, 0.09); /* hover de cards de vaga */
+  --shadow-row: 0 4px 14px rgba(25, 24, 23, 0.07); /* hover de linhas de skill */
+  --shadow-ink: 0 1px 2px rgba(25, 24, 23, 0.2); /* botão primário */
+
+  /* --- Animações --- */
+  --animate-sc-in: scIn 0.35s ease;
+  --animate-sc-grow: scGrow 0.8s ease;
+  --animate-sc-pulse: scPulse 1.1s infinite;
+
+  @keyframes scIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes scGrow {
+    from {
+      width: 0;
+    }
+  }
+
+  @keyframes scPulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.3;
+    }
   }
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+/* Peso e tracking do display (variável, eixo wght) — handoff :root */
+:root {
+  --wt-display: 560;
+  --ls-display: 0;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+@layer base {
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: 1.5;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: var(--wt-display);
+    letter-spacing: var(--ls-display);
+  }
+
+  /* Foco visível consistente sobre a paleta editorial (NFR-010 / a11y) */
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+}
+
+/* Respeita usuários com redução de movimento (a11y) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

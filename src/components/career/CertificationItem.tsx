@@ -31,7 +31,7 @@ export function CertificationItem({
 
   if (editing) {
     return (
-      <li className="rounded-md border border-foreground/15 p-4">
+      <li className="rounded-md border border-line p-4">
         <CertificationForm
           initial={item}
           submitLabel="Salvar"
@@ -49,12 +49,12 @@ export function CertificationItem({
   }
 
   return (
-    <li className="flex flex-col gap-2 rounded-md border border-foreground/15 px-4 py-3">
+    <li className="flex flex-col gap-2 rounded-md border border-line px-4 py-3">
       {error ? <Alert>{error}</Alert> : null}
       <div className="flex items-start justify-between gap-3">
         <div className="text-sm">
           <p className="font-medium">{item.name}</p>
-          <p className="text-foreground/80">
+          <p className="text-soft">
             {item.issuer} · emitida em {item.issued_at}
             {item.expires_at ? ` · expira em ${item.expires_at}` : ""}
           </p>
@@ -66,7 +66,7 @@ export function CertificationItem({
           <button
             onClick={handleDelete}
             aria-label={`Excluir certificação ${item.name}`}
-            className="text-sm font-medium text-red-700 underline dark:text-red-400"
+            className="text-sm font-medium text-rejected-fg underline"
           >
             Excluir
           </button>

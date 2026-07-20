@@ -35,7 +35,7 @@ export function AdaptTrigger({ onAdapt }: { onAdapt: (language: Language) => Pro
 
   return (
     <section className="flex flex-col gap-3" aria-label="Adaptar currículo">
-      <h2 className="text-sm font-semibold text-foreground/90">Adaptar currículo para esta vaga</h2>
+      <h2 className="text-sm font-semibold text-ink">Adaptar currículo para esta vaga</h2>
       {error ? <Alert>{error}</Alert> : null}
       <div className="flex flex-wrap items-end gap-3">
         <Select

@@ -71,8 +71,8 @@ export function ResumeDocuments({ adaptationId }: { adaptationId: string }) {
   }
 
   return (
-    <section className="flex flex-col gap-3 border-t border-foreground/15 pt-6" aria-label="Currículo em PDF">
-      <h2 className="text-sm font-semibold text-foreground/90">Currículo em PDF</h2>
+    <section className="flex flex-col gap-3 border-t border-hairline pt-6" aria-label="Currículo em PDF">
+      <h2 className="text-sm font-semibold text-ink">Currículo em PDF</h2>
       {error ? <Alert>{error}</Alert> : null}
 
       <div className="flex flex-wrap items-end gap-3">
@@ -101,12 +101,12 @@ export function ResumeDocuments({ adaptationId }: { adaptationId: string }) {
           {documents.map((doc) => (
             <li
               key={doc.id}
-              className="flex items-center justify-between gap-3 rounded-md border border-foreground/15 px-4 py-2 text-sm"
+              className="flex items-center justify-between gap-3 rounded-md border border-line px-4 py-2 text-sm"
             >
-              <span className="text-foreground/80">
+              <span className="text-soft">
                 {LANGUAGE_LABELS[doc.language]} · {Math.round(doc.file_size / 1024)} KB
               </span>
-              <span className="text-foreground/70">{doc.generated_at}</span>
+              <span className="text-soft">{doc.generated_at}</span>
             </li>
           ))}
         </ul>

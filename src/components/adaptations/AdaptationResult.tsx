@@ -5,9 +5,9 @@
 import { SEVERITY_LABELS, type Adaptation, type GapSeverity } from "@/lib/adaptations/types";
 
 const SEVERITY_CLASSES: Record<GapSeverity, string> = {
-  low: "border-foreground/30 text-foreground/80",
-  medium: "border-amber-600/40 text-amber-700 dark:text-amber-400",
-  high: "border-red-600/40 text-red-700 dark:text-red-400",
+  low: "border-line text-soft",
+  medium: "border-interviewing-line text-interviewing-fg",
+  high: "border-rejected-line text-rejected-fg",
 };
 
 const pct = (value: number): string => `${Math.round(value * 100)}%`;
@@ -23,10 +23,10 @@ export function AdaptationResult({ adaptation }: { adaptation: Adaptation }) {
     <div className="flex flex-col gap-6">
       {suggestions ? (
         <section className="flex flex-col gap-1" aria-label="Aderência">
-          <span className="text-sm text-foreground/70">Aderência estimada à vaga</span>
+          <span className="text-sm text-soft">Aderência estimada à vaga</span>
           <span className="text-3xl font-bold tracking-tight">{pct(suggestions.estimated_match)}</span>
           {skillCount > 0 ? (
-            <span className="text-sm text-foreground/70">
+            <span className="text-sm text-soft">
               {skillCount} skill(s) priorizada(s) pela IA
             </span>
           ) : null}
@@ -35,10 +35,10 @@ export function AdaptationResult({ adaptation }: { adaptation: Adaptation }) {
 
       {suggestions && suggestions.gaps.length > 0 ? (
         <section className="flex flex-col gap-3">
-          <h2 className="text-sm font-semibold text-foreground/90">Lacunas identificadas</h2>
+          <h2 className="text-sm font-semibold text-ink">Lacunas identificadas</h2>
           <ul className="flex flex-col gap-3">
             {suggestions.gaps.map((gap, i) => (
-              <li key={i} className="flex flex-col gap-1 rounded-md border border-foreground/15 px-4 py-3">
+              <li key={i} className="flex flex-col gap-1 rounded-md border border-line px-4 py-3">
                 <div className="flex items-center justify-between gap-3">
                   <span className="text-sm font-medium">{gap.required}</span>
                   <span
@@ -47,8 +47,8 @@ export function AdaptationResult({ adaptation }: { adaptation: Adaptation }) {
                     {SEVERITY_LABELS[gap.severity]}
                   </span>
                 </div>
-                <span className="text-sm text-foreground/80">Atual: {gap.current}</span>
-                <span className="text-sm text-foreground/80">{gap.recommendation}</span>
+                <span className="text-sm text-soft">Atual: {gap.current}</span>
+                <span className="text-sm text-soft">{gap.recommendation}</span>
               </li>
             ))}
           </ul>
@@ -57,8 +57,8 @@ export function AdaptationResult({ adaptation }: { adaptation: Adaptation }) {
 
       {suggestions && suggestions.recommendations.length > 0 ? (
         <section className="flex flex-col gap-2">
-          <h2 className="text-sm font-semibold text-foreground/90">Recomendações</h2>
-          <ul className="flex list-disc flex-col gap-1 pl-5 text-sm text-foreground/80">
+          <h2 className="text-sm font-semibold text-ink">Recomendações</h2>
+          <ul className="flex list-disc flex-col gap-1 pl-5 text-sm text-soft">
             {suggestions.recommendations.map((rec, i) => (
               <li key={i}>{rec}</li>
             ))}
@@ -68,15 +68,15 @@ export function AdaptationResult({ adaptation }: { adaptation: Adaptation }) {
 
       {suggestions?.tone_adjustment ? (
         <section className="flex flex-col gap-1">
-          <h2 className="text-sm font-semibold text-foreground/90">Ajuste de tom</h2>
-          <p className="text-sm text-foreground/80">{suggestions.tone_adjustment}</p>
+          <h2 className="text-sm font-semibold text-ink">Ajuste de tom</h2>
+          <p className="text-sm text-soft">{suggestions.tone_adjustment}</p>
         </section>
       ) : null}
 
       {cost ? (
-        <section className="flex flex-col gap-1 border-t border-foreground/15 pt-4">
-          <h2 className="text-sm font-semibold text-foreground/90">Custo da análise</h2>
-          <p className="text-sm text-foreground/70">
+        <section className="flex flex-col gap-1 border-t border-hairline pt-4">
+          <h2 className="text-sm font-semibold text-ink">Custo da análise</h2>
+          <p className="text-sm text-soft">
             {cost.model} · {cost.input_tokens + cost.output_tokens} tokens · US$
             {" "}
             {cost.estimated_cost_usd.toFixed(3)}
