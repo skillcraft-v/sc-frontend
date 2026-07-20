@@ -34,10 +34,10 @@ export function StatusChanger({ status, onChange }: StatusChangerProps) {
 
   return (
     <section className="flex flex-col gap-3" aria-label="Mudar status">
-      <h2 className="text-sm font-semibold text-foreground/90">Mover no funil</h2>
+      <h2 className="text-sm font-semibold text-ink">Mover no funil</h2>
       {error ? <Alert>{error}</Alert> : null}
       {targets.length === 0 ? (
-        <p className="text-sm text-foreground/70">Esta vaga chegou ao fim do funil.</p>
+        <p className="text-sm text-soft">Esta vaga chegou ao fim do funil.</p>
       ) : (
         <div className="flex flex-wrap gap-2">
           {targets.map((next) => (
@@ -47,7 +47,7 @@ export function StatusChanger({ status, onChange }: StatusChangerProps) {
               onClick={() => handleClick(next)}
               disabled={pending !== null}
               aria-busy={pending === next || undefined}
-              className="rounded-md border border-foreground/30 px-3 py-2 text-sm font-medium transition-opacity hover:opacity-90 disabled:opacity-60"
+              className="rounded-md border border-line px-3 py-2 text-sm font-medium transition-opacity hover:opacity-90 disabled:opacity-60"
             >
               {pending === next ? "Movendo…" : `Marcar como ${STATUS_LABELS[next]}`}
             </button>

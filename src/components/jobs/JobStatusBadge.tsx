@@ -2,12 +2,12 @@
 import { STATUS_LABELS, type JobStatus } from "@/lib/jobs/types";
 
 const STATUS_CLASSES: Record<JobStatus, string> = {
-  saved: "border-foreground/30 text-foreground/80",
-  applied: "border-blue-600/40 text-blue-700 dark:text-blue-400",
-  interviewing: "border-amber-600/40 text-amber-700 dark:text-amber-400",
-  offer: "border-violet-600/40 text-violet-700 dark:text-violet-400",
-  rejected: "border-red-600/40 text-red-700 dark:text-red-400",
-  accepted: "border-green-600/40 text-green-700 dark:text-green-400",
+  saved: "border-saved-line text-saved-fg",
+  applied: "border-applied-line text-applied-fg",
+  interviewing: "border-interviewing-line text-interviewing-fg",
+  offer: "border-offer-line text-offer-fg",
+  rejected: "border-rejected-line text-rejected-fg",
+  accepted: "border-accepted-line text-accepted-fg",
 };
 
 export function JobStatusBadge({ status }: { status: JobStatus }) {

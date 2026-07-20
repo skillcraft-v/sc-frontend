@@ -74,15 +74,15 @@ export function ProjectSkillsManager({
   const skillOptions = skills.map((s) => ({ value: s.id, label: s.title_pt }));
 
   return (
-    <section className="flex flex-col gap-4 border-t border-foreground/15 pt-6">
+    <section className="flex flex-col gap-4 border-t border-hairline pt-6">
       <h2 className="text-lg font-semibold">Skills do projeto</h2>
 
       {links.length === 0 ? (
-        <p className="text-sm text-foreground/80">Nenhuma skill vinculada.</p>
+        <p className="text-sm text-soft">Nenhuma skill vinculada.</p>
       ) : (
         <ul className="flex flex-col gap-2">
           {links.map((link) => (
-            <li key={link.skill_id} className="flex items-center justify-between gap-3 rounded-md border border-foreground/15 px-3 py-2 text-sm">
+            <li key={link.skill_id} className="flex items-center justify-between gap-3 rounded-md border border-line px-3 py-2 text-sm">
               <span>
                 <strong>{titleFor(link.skill_id)}</strong> · peso {link.relevance_weight.toFixed(1)}
               </span>
@@ -90,7 +90,7 @@ export function ProjectSkillsManager({
                 type="button"
                 onClick={() => handleUnlink(link.skill_id)}
                 aria-label={`Desvincular ${titleFor(link.skill_id)}`}
-                className="text-sm font-medium text-red-700 underline dark:text-red-400"
+                className="text-sm font-medium text-rejected-fg underline"
               >
                 Desvincular
               </button>
@@ -103,7 +103,7 @@ export function ProjectSkillsManager({
         {error ? <Alert>{error}</Alert> : null}
         <Select id="link_skill" label="Skill" options={skillOptions} placeholder="Selecione uma skill" value={selected} onChange={(e) => setSelected(e.target.value)} />
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="link_weight" className="text-sm font-medium text-foreground/90">
+          <label htmlFor="link_weight" className="text-sm font-medium text-ink">
             Peso de relevância: <span aria-live="polite">{weight.toFixed(1)}</span>
           </label>
           <input
@@ -114,7 +114,7 @@ export function ProjectSkillsManager({
             step={0.1}
             value={weight}
             onChange={(e) => setWeight(Number(e.target.value))}
-            className="accent-foreground"
+            className="accent-ink"
           />
         </div>
         <Button type="submit" pending={pending} pendingLabel="Vinculando…" disabled={!selected}>

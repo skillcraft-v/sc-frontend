@@ -5,7 +5,7 @@ export function Alert({ children }: { children: ReactNode }) {
   return (
     <p
       role="alert"
-      className="rounded-md border border-red-600/40 bg-red-600/10 px-3 py-2 text-sm text-red-700 dark:text-red-400"
+      className="rounded-md border border-rejected-line bg-rejected-tint px-3 py-2 text-sm text-rejected-fg"
     >
       {children}
     </p>

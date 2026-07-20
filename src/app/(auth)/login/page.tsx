@@ -59,7 +59,7 @@ export default function LoginPage() {
           Entrar
         </Button>
       </form>
-      <p className="text-sm text-foreground/80">
+      <p className="text-sm text-soft">
         Não tem conta?{" "}
         <Link href="/registro" className="font-medium underline">
           Criar conta

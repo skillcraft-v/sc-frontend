@@ -94,7 +94,7 @@ function VagaDetalhe() {
 
   if (state === "loading") {
     return (
-      <p role="status" className="p-6 text-center text-foreground/80">
+      <p role="status" className="p-6 text-center text-soft">
         Carregando vaga…
       </p>
     );
@@ -103,7 +103,7 @@ function VagaDetalhe() {
   if (state === "notfound") {
     return (
       <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-4 px-6 py-12">
-        <p role="alert" className="text-sm text-red-700 dark:text-red-400">
+        <p role="alert" className="text-sm text-rejected-fg">
           Vaga não encontrada.
         </p>
         <Link href="/vagas" className="text-sm font-medium underline">
@@ -116,7 +116,7 @@ function VagaDetalhe() {
   if (state === "error" || !job) {
     return (
       <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-4 px-6 py-12">
-        <p role="alert" className="text-sm text-red-700 dark:text-red-400">
+        <p role="alert" className="text-sm text-rejected-fg">
           Não foi possível carregar a vaga.
         </p>
       </main>
@@ -139,22 +139,22 @@ function VagaDetalhe() {
 
       <StatusChanger status={job.status} onChange={handleStatus} />
 
-      <div className="border-t border-foreground/15 pt-6">
+      <div className="border-t border-hairline pt-6">
         <AdaptTrigger onAdapt={handleAdapt} />
       </div>
 
-      <section className="flex flex-col gap-3 border-t border-foreground/15 pt-6">
-        <h2 className="text-sm font-semibold text-foreground/90">Editar vaga</h2>
+      <section className="flex flex-col gap-3 border-t border-hairline pt-6">
+        <h2 className="text-sm font-semibold text-ink">Editar vaga</h2>
         <JobForm initial={job} submitLabel="Salvar alterações" onSubmit={handleUpdate} />
       </section>
 
       <JobAdaptations jobId={job.id} />
 
-      <section className="flex flex-col gap-2 border-t border-foreground/15 pt-6">
-        <h2 className="text-sm font-semibold text-foreground/90">Excluir vaga</h2>
+      <section className="flex flex-col gap-2 border-t border-hairline pt-6">
+        <h2 className="text-sm font-semibold text-ink">Excluir vaga</h2>
         <button
           onClick={handleDelete}
-          className="self-start text-sm font-medium text-red-700 underline dark:text-red-400"
+          className="self-start text-sm font-medium text-rejected-fg underline"
         >
           Excluir esta vaga
         </button>
@@ -183,30 +183,30 @@ function JobAdaptations({ jobId }: { jobId: string }) {
   }, [jobId]);
 
   return (
-    <section className="flex flex-col gap-3 border-t border-foreground/15 pt-6">
-      <h2 className="text-sm font-semibold text-foreground/90">Adaptações</h2>
+    <section className="flex flex-col gap-3 border-t border-hairline pt-6">
+      <h2 className="text-sm font-semibold text-ink">Adaptações</h2>
       {failed ? (
-        <p role="alert" className="text-sm text-red-700 dark:text-red-400">
+        <p role="alert" className="text-sm text-rejected-fg">
           Não foi possível carregar as adaptações.
         </p>
       ) : items === null ? (
-        <p role="status" className="text-sm text-foreground/80">
+        <p role="status" className="text-sm text-soft">
           Carregando adaptações…
         </p>
       ) : items.length === 0 ? (
-        <p className="text-sm text-foreground/80">Nenhuma adaptação ainda.</p>
+        <p className="text-sm text-soft">Nenhuma adaptação ainda.</p>
       ) : (
         <ul className="flex flex-col gap-2">
           {items.map((a) => (
             <li key={a.id}>
               <Link
                 href={`/adaptacoes/${a.id}`}
-                className="flex items-center justify-between gap-3 rounded-md border border-foreground/15 px-4 py-2 text-sm hover:border-foreground/40"
+                className="flex items-center justify-between gap-3 rounded-md border border-line px-4 py-2 text-sm hover:border-ink"
               >
-                <span className="text-foreground/80">{a.created_at}</span>
+                <span className="text-soft">{a.created_at}</span>
                 <span className="flex items-center gap-3">
                   {typeof a.match_score === "number" ? (
-                    <span className="text-foreground/80">{Math.round(a.match_score * 100)}%</span>
+                    <span className="text-soft">{Math.round(a.match_score * 100)}%</span>
                   ) : null}
                   <span className="font-medium">
                     {ADAPTATION_STATUS_LABELS[a.status as AdaptationStatus] ?? a.status}

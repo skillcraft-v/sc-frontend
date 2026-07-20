@@ -75,7 +75,7 @@ export default function RegistroPage() {
           Criar conta
         </Button>
       </form>
-      <p className="text-sm text-foreground/80">
+      <p className="text-sm text-soft">
         Já tem conta?{" "}
         <Link href="/login" className="font-medium underline">
           Entrar

@@ -78,12 +78,12 @@ function ProfileContent() {
           Voltar
         </button>
       </div>
-      <p className="text-sm text-foreground/80">{current.email}</p>
+      <p className="text-sm text-soft">{current.email}</p>
 
       <form onSubmit={handleSave} className="flex flex-col gap-4" noValidate>
         {error ? <Alert>{error}</Alert> : null}
         {saved ? (
-          <p role="status" className="text-sm text-green-700 dark:text-green-400">
+          <p role="status" className="text-sm text-accepted-fg">
             Perfil atualizado.
           </p>
         ) : null}
@@ -118,24 +118,24 @@ function ProfileContent() {
         </Button>
       </form>
 
-      <section className="flex flex-col gap-2 border-t border-foreground/15 pt-6">
-        <h2 className="text-sm font-semibold text-foreground/90">Excluir conta</h2>
+      <section className="flex flex-col gap-2 border-t border-hairline pt-6">
+        <h2 className="text-sm font-semibold text-ink">Excluir conta</h2>
         {confirmingDelete ? (
           <div className="flex flex-col gap-2">
-            <p className="text-sm text-foreground/80">
+            <p className="text-sm text-soft">
               Esta ação é permanente. Tem certeza que deseja excluir sua conta?
             </p>
             <div className="flex gap-2">
               <button
                 onClick={handleDelete}
                 disabled={pending}
-                className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+                className="rounded-md bg-rejected-fg px-4 py-2 text-sm font-medium text-ink-inverse disabled:opacity-60"
               >
                 Confirmar exclusão
               </button>
               <button
                 onClick={() => setConfirmingDelete(false)}
-                className="rounded-md border border-foreground/30 px-4 py-2 text-sm"
+                className="rounded-md border border-line px-4 py-2 text-sm"
               >
                 Cancelar
               </button>
@@ -144,7 +144,7 @@ function ProfileContent() {
         ) : (
           <button
             onClick={() => setConfirmingDelete(true)}
-            className="self-start text-sm font-medium text-red-700 underline dark:text-red-400"
+            className="self-start text-sm font-medium text-rejected-fg underline"
           >
             Excluir conta
           </button>

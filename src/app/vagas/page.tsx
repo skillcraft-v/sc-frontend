@@ -35,15 +35,15 @@ function VagasList() {
         <h1 className="text-2xl font-bold tracking-tight">Vagas</h1>
         <button
           onClick={() => setCreating((v) => !v)}
-          className="rounded-md bg-foreground px-4 py-2 text-sm font-medium text-background hover:opacity-90"
+          className="rounded-md bg-ink px-4 py-2 text-sm font-medium text-ink-inverse hover:opacity-90"
         >
           {creating ? "Cancelar" : "Nova vaga"}
         </button>
       </div>
 
       {creating ? (
-        <section className="rounded-md border border-foreground/15 p-4">
-          <h2 className="mb-4 text-sm font-semibold text-foreground/90">Nova vaga</h2>
+        <section className="rounded-md border border-line p-4">
+          <h2 className="mb-4 text-sm font-semibold text-ink">Nova vaga</h2>
           <JobForm submitLabel="Salvar vaga" onSubmit={handleCreate} />
         </section>
       ) : null}
@@ -51,14 +51,14 @@ function VagasList() {
       <JobFilters onApply={applyFilters} />
 
       {status === "loading" ? (
-        <p role="status" className="text-sm text-foreground/80">
+        <p role="status" className="text-sm text-soft">
           Carregando vagas…
         </p>
       ) : null}
 
       {status === "error" ? (
         <div className="flex items-center gap-3">
-          <p role="alert" className="text-sm text-red-700 dark:text-red-400">
+          <p role="alert" className="text-sm text-rejected-fg">
             Não foi possível carregar as vagas.
           </p>
           <button onClick={reload} className="text-sm font-medium underline">
@@ -75,11 +75,11 @@ function VagasList() {
                 <li key={job.id}>
                   <Link
                     href={`/vagas/${job.id}`}
-                    className="flex items-center justify-between gap-3 rounded-md border border-foreground/15 px-4 py-3 hover:border-foreground/40"
+                    className="flex items-center justify-between gap-3 rounded-md border border-line px-4 py-3 hover:border-ink"
                   >
                     <span className="flex flex-col">
                       <span className="text-sm font-medium">{job.title}</span>
-                      <span className="text-sm text-foreground/80">
+                      <span className="text-sm text-soft">
                         {job.company}
                         {job.is_remote ? " · Remoto" : job.location ? ` · ${job.location}` : ""}
                       </span>
@@ -90,7 +90,7 @@ function VagasList() {
               ))}
             </ul>
           ) : (
-            <p className="text-sm text-foreground/80">Nenhuma vaga ainda.</p>
+            <p className="text-sm text-soft">Nenhuma vaga ainda.</p>
           )}
 
           {totalPages > 1 ? (
@@ -102,7 +102,7 @@ function VagasList() {
               >
                 Anterior
               </button>
-              <span className="text-sm text-foreground/80">
+              <span className="text-sm text-soft">
                 Página {page} de {totalPages}
               </span>
               <button
