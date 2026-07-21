@@ -1,7 +1,7 @@
-import { render, screen, waitFor, cleanup, fireEvent } from "@testing-library/react";
+import { render, screen, cleanup, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import CarreiraPage from "@/app/carreira/page";
+import CarreiraPage from "@/app/(app)/carreira/page";
 import { SessionProvider } from "@/lib/auth/session";
 import { clearTokens, setTokens } from "@/lib/auth-tokens";
 import { server } from "@/test/msw/server";

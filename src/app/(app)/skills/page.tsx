@@ -1,17 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { RequireAuth } from "@/lib/auth/require-auth";
 import { useSkillList } from "@/lib/skills/use-skill-list";
 import { CATEGORY_LABELS, PROFICIENCY_LABELS } from "@/lib/skills/types";
 import { SkillFilters } from "@/components/skills/SkillFilters";
 
 export default function SkillsPage() {
-  return (
-    <RequireAuth>
-      <SkillsList />
-    </RequireAuth>
-  );
+  return <SkillsList />;
 }
 
 function SkillsList() {
@@ -19,7 +14,7 @@ function SkillsList() {
   const totalPages = data?.pages ?? 0;
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-6 px-6 py-12">
+    <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-6 px-6 py-12">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-bold tracking-tight">Skills</h1>
         <Link
@@ -101,6 +96,6 @@ function SkillsList() {
           ) : null}
         </>
       ) : null}
-    </main>
+    </div>
   );
 }
