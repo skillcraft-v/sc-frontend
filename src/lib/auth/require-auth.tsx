@@ -6,13 +6,14 @@
  * isto é apenas UX — qualquer endpoint protegido revalida o token.
  */
 import { useEffect, type ReactNode } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "@/lib/auth/session";
-import { Header } from "@/components/ui/Header";
+import { Sidebar } from "@/components/ui/Sidebar";
 
 export function RequireAuth({ children }: { children: ReactNode }) {
   const { status } = useSession();
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -28,10 +29,16 @@ export function RequireAuth({ children }: { children: ReactNode }) {
     );
   }
 
+  // Shell editorial: sidebar (drawer no mobile) + main (max 960px, transição scIn a cada rota).
   return (
-    <>
-      <Header />
-      {children}
-    </>
+    <div className="flex min-h-screen flex-col lg:flex-row">
+      <Sidebar />
+      <main
+        key={pathname}
+        className="mx-auto w-full max-w-[960px] flex-1 animate-sc-in px-5 py-8 lg:px-11 lg:py-9"
+      >
+        {children}
+      </main>
+    </div>
   );
 }
