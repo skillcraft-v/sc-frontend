@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { RequireAuth } from "@/lib/auth/require-auth";
 import { useJobList } from "@/lib/jobs/use-job-list";
 import { createJob } from "@/lib/jobs/api";
 import type { JobInput } from "@/lib/jobs/types";
@@ -11,11 +10,7 @@ import { JobForm } from "@/components/jobs/JobForm";
 import { JobStatusBadge } from "@/components/jobs/JobStatusBadge";
 
 export default function VagasPage() {
-  return (
-    <RequireAuth>
-      <VagasList />
-    </RequireAuth>
-  );
+  return <VagasList />;
 }
 
 function VagasList() {
@@ -30,7 +25,7 @@ function VagasList() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-6 px-6 py-12">
+    <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-6 px-6 py-12">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-bold tracking-tight">Vagas</h1>
         <button
@@ -116,6 +111,6 @@ function VagasList() {
           ) : null}
         </>
       ) : null}
-    </main>
+    </div>
   );
 }

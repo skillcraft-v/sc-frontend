@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { RequireAuth } from "@/lib/auth/require-auth";
 import { deleteProject, getProject, updateProject } from "@/lib/career/api";
 import { careerErrorMessage } from "@/lib/career/error-messages";
 import type { Project, ProjectInput } from "@/lib/career/types";
@@ -12,11 +11,7 @@ import { ProjectSkillsManager } from "@/components/career/ProjectSkillsManager";
 import { Alert } from "@/components/ui/Alert";
 
 export default function EditarProjetoPage() {
-  return (
-    <RequireAuth>
-      <EditarProjeto />
-    </RequireAuth>
-  );
+  return <EditarProjeto />;
 }
 
 type LoadState = "loading" | "loaded" | "notfound" | "error";
@@ -73,29 +68,29 @@ function EditarProjeto() {
 
   if (state === "notfound") {
     return (
-      <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-4 px-6 py-12">
+      <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-4 px-6 py-12">
         <p role="alert" className="text-sm text-rejected-fg">
           Projeto não encontrado.
         </p>
         <Link href="/carreira" className="text-sm font-medium underline">
           Voltar para carreira
         </Link>
-      </main>
+      </div>
     );
   }
 
   if (state === "error" || !project) {
     return (
-      <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-4 px-6 py-12">
+      <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-4 px-6 py-12">
         <p role="alert" className="text-sm text-rejected-fg">
           Não foi possível carregar o projeto.
         </p>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-6 px-6 py-12">
+    <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-6 px-6 py-12">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-bold tracking-tight">Editar projeto</h1>
         <Link href="/carreira" className="text-sm font-medium underline">
@@ -118,6 +113,6 @@ function EditarProjeto() {
           Excluir este projeto
         </button>
       </section>
-    </main>
+    </div>
   );
 }

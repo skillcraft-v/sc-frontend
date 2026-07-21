@@ -1,7 +1,7 @@
 import { render, screen, cleanup, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import VagasPage from "@/app/vagas/page";
+import VagasPage from "@/app/(app)/vagas/page";
 import { SessionProvider } from "@/lib/auth/session";
 import { clearTokens, setTokens } from "@/lib/auth-tokens";
 import { server } from "@/test/msw/server";

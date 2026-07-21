@@ -2,7 +2,6 @@
 
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { RequireAuth } from "@/lib/auth/require-auth";
 import { useAdaptationPoll } from "@/lib/adaptations/use-adaptation-poll";
 import { adaptationErrorMessage, failureMessage } from "@/lib/adaptations/error-messages";
 import { STATUS_LABELS } from "@/lib/adaptations/types";
@@ -11,11 +10,7 @@ import { ResumeDocuments } from "@/components/adaptations/ResumeDocuments";
 import { Alert } from "@/components/ui/Alert";
 
 export default function AdaptacaoPage() {
-  return (
-    <RequireAuth>
-      <Adaptacao />
-    </RequireAuth>
-  );
+  return <Adaptacao />;
 }
 
 function Adaptacao() {
@@ -23,7 +18,7 @@ function Adaptacao() {
   const { adaptation, phase, error } = useAdaptationPoll(params.id);
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-6 px-6 py-12">
+    <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-6 px-6 py-12">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-bold tracking-tight">Adaptação</h1>
         {adaptation?.job_id ? (
@@ -62,6 +57,6 @@ function Adaptacao() {
           <ResumeDocuments adaptationId={adaptation.id} />
         </>
       ) : null}
-    </main>
+    </div>
   );
 }

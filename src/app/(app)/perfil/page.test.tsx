@@ -1,7 +1,8 @@
 import { render, screen, waitFor, cleanup } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import PerfilPage from "@/app/perfil/page";
+import PerfilPage from "@/app/(app)/perfil/page";
+import { RequireAuth } from "@/lib/auth/require-auth";
 import { SessionProvider } from "@/lib/auth/session";
 import { clearTokens, setTokens } from "@/lib/auth-tokens";
 import { server } from "@/test/msw/server";
@@ -24,10 +25,14 @@ const PROFILE = {
   linkedin_url: null,
 };
 
+// A guarda de sessão vem do layout do route group (app) — reproduzida aqui para que a
+// página só monte com `user` hidratado, como acontece em runtime (SKC-63).
 function renderPerfil() {
   return render(
     <SessionProvider>
-      <PerfilPage />
+      <RequireAuth>
+        <PerfilPage />
+      </RequireAuth>
     </SessionProvider>,
   );
 }

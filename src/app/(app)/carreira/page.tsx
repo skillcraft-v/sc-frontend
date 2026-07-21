@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { RequireAuth } from "@/lib/auth/require-auth";
 import { useResourceList } from "@/lib/career/use-resource-list";
 import { careerErrorMessage } from "@/lib/career/error-messages";
 import {
@@ -23,11 +22,7 @@ import { EducationItem } from "@/components/career/EducationItem";
 import { CertificationItem } from "@/components/career/CertificationItem";
 
 export default function CarreiraPage() {
-  return (
-    <RequireAuth>
-      <Career />
-    </RequireAuth>
-  );
+  return <Career />;
 }
 
 function Career() {
@@ -47,7 +42,7 @@ function Career() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-12 px-6 py-12">
+    <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-12 px-6 py-12">
       <h1 className="text-2xl font-bold tracking-tight">Carreira</h1>
 
       <CareerSection
@@ -151,6 +146,6 @@ function Career() {
           ))}
         </ul>
       </CareerSection>
-    </main>
+    </div>
   );
 }

@@ -1,6 +1,6 @@
 import { render, screen, cleanup } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import AdaptacaoPage from "@/app/adaptacoes/[id]/page";
+import AdaptacaoPage from "@/app/(app)/adaptacoes/[id]/page";
 import { SessionProvider } from "@/lib/auth/session";
 import { clearTokens, setTokens } from "@/lib/auth-tokens";
 import { server } from "@/test/msw/server";

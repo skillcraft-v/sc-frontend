@@ -27,6 +27,11 @@ test.describe("Tela de login", () => {
     await expectNoSeriousA11yViolations(page);
   });
 
+  test("não renderiza o shell de navegação (rota fora do route group (app))", async ({ page }) => {
+    await page.goto("/login");
+    await expect(page.getByRole("navigation", { name: "Navegação principal" })).toHaveCount(0);
+  });
+
   test("é navegável por teclado (tab chega ao e-mail)", async ({ page }) => {
     await page.goto("/login");
     await page.keyboard.press("Tab");
@@ -47,4 +52,21 @@ test.describe("Tela de registro", () => {
     await page.goto("/registro");
     await expectNoSeriousA11yViolations(page);
   });
+
+  test("não renderiza o shell de navegação", async ({ page }) => {
+    await page.goto("/registro");
+    await expect(page.getByRole("navigation", { name: "Navegação principal" })).toHaveCount(0);
+  });
+});
+
+test.describe("Guarda das rotas autenticadas", () => {
+  // O route group (app) aplica RequireAuth pelo layout: sem sessão, qualquer rota
+  // autenticada cai em /login sem exibir a sidebar (SKC-63).
+  for (const path of ["/vagas", "/skills", "/carreira", "/perfil"]) {
+    test(`${path} sem sessão redireciona para /login`, async ({ page }) => {
+      await page.goto(path);
+      await expect(page).toHaveURL(/\/login$/);
+      await expect(page.getByRole("heading", { name: "Entrar", level: 1 })).toBeVisible();
+    });
+  }
 });

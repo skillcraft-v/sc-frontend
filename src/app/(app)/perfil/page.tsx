@@ -4,7 +4,6 @@ import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import { useSession } from "@/lib/auth/session";
-import { RequireAuth } from "@/lib/auth/require-auth";
 import { authErrorMessage, fieldErrors } from "@/lib/auth/error-messages";
 import type { ProfileUpdateInput, UserProfile } from "@/lib/auth/types";
 import { Field } from "@/components/ui/Field";
@@ -12,17 +11,13 @@ import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
 
 export default function PerfilPage() {
-  return (
-    <RequireAuth>
-      <ProfileContent />
-    </RequireAuth>
-  );
+  return <ProfileContent />;
 }
 
 function ProfileContent() {
   const { user, logout, refreshProfile } = useSession();
   const router = useRouter();
-  // user é garantido pela RequireAuth (status === "authenticated").
+  // user é garantido pela guarda do layout do route group (status === "authenticated").
   const current = user as UserProfile;
 
   const [fullName, setFullName] = useState(current.full_name);
@@ -71,7 +66,7 @@ function ProfileContent() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center gap-6 px-6 py-12">
+    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center gap-6 px-6 py-12">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-bold tracking-tight">Meu perfil</h1>
         <button onClick={() => router.push("/vagas")} className="text-sm font-medium underline">
@@ -150,6 +145,6 @@ function ProfileContent() {
           </button>
         )}
       </section>
-    </main>
+    </div>
   );
 }

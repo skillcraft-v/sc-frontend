@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { RequireAuth } from "@/lib/auth/require-auth";
 import {
   changeJobStatus,
   deleteJob,
@@ -26,11 +25,7 @@ import { AdaptTrigger } from "@/components/adaptations/AdaptTrigger";
 import { Alert } from "@/components/ui/Alert";
 
 export default function VagaPage() {
-  return (
-    <RequireAuth>
-      <VagaDetalhe />
-    </RequireAuth>
-  );
+  return <VagaDetalhe />;
 }
 
 type LoadState = "loading" | "loaded" | "notfound" | "error";
@@ -102,29 +97,29 @@ function VagaDetalhe() {
 
   if (state === "notfound") {
     return (
-      <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-4 px-6 py-12">
+      <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-4 px-6 py-12">
         <p role="alert" className="text-sm text-rejected-fg">
           Vaga não encontrada.
         </p>
         <Link href="/vagas" className="text-sm font-medium underline">
           Voltar para a lista
         </Link>
-      </main>
+      </div>
     );
   }
 
   if (state === "error" || !job) {
     return (
-      <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-4 px-6 py-12">
+      <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-4 px-6 py-12">
         <p role="alert" className="text-sm text-rejected-fg">
           Não foi possível carregar a vaga.
         </p>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-6 px-6 py-12">
+    <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-6 px-6 py-12">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold tracking-tight">{job.title}</h1>
@@ -159,7 +154,7 @@ function VagaDetalhe() {
           Excluir esta vaga
         </button>
       </section>
-    </main>
+    </div>
   );
 }
 
