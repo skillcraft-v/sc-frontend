@@ -26,6 +26,16 @@ export const STATUS_LABELS: Record<JobStatus, string> = {
   accepted: "Aceita",
 };
 
+/** Rótulos pt-BR no plural, usados nos chips do funil (handoff §Vagas). */
+export const STATUS_PLURAL_LABELS: Record<JobStatus, string> = {
+  saved: "Salvas",
+  applied: "Aplicadas",
+  interviewing: "Entrevistando",
+  offer: "Propostas",
+  rejected: "Recusadas",
+  accepted: "Aceitas",
+};
+
 /**
  * Grafo de transições do funil (JOB-01) — só avança no MVP. Usado apenas para habilitar
  * os botões de transição; a validação real é do sc-api (transição inválida → 409).

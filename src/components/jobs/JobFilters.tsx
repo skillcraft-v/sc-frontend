@@ -1,31 +1,30 @@
 "use client";
 
+/**
+ * Filtros da listagem de vagas — empresa e modalidade. O filtro de status é o funil
+ * (`JobFunnel`), por isso não aparece aqui; a página combina os dois.
+ */
 import { useState, type FormEvent } from "react";
-import {
-  JOB_STATUSES,
-  STATUS_LABELS,
-  type JobFilters as Filters,
-  type JobStatus,
-} from "@/lib/jobs/types";
+import type { JobFilters as Filters } from "@/lib/jobs/types";
 import { Field } from "@/components/ui/Field";
 import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
 
-const statusOptions = JOB_STATUSES.map((v) => ({ value: v, label: STATUS_LABELS[v] }));
 const remoteOptions = [
   { value: "true", label: "Remoto" },
   { value: "false", label: "Presencial" },
 ];
 
-export function JobFilters({ onApply }: { onApply: (filters: Filters) => void }) {
-  const [status, setStatus] = useState("");
+/** Filtros controlados por este formulário (o status vem do funil). */
+export type JobFieldFilters = Omit<Filters, "status">;
+
+export function JobFilters({ onApply }: { onApply: (filters: JobFieldFilters) => void }) {
   const [company, setCompany] = useState("");
   const [isRemote, setIsRemote] = useState("");
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
     onApply({
-      status: (status || undefined) as JobStatus | undefined,
       company: company || undefined,
       is_remote: isRemote === "" ? undefined : isRemote === "true",
     });
@@ -35,16 +34,8 @@ export function JobFilters({ onApply }: { onApply: (filters: Filters) => void })
     <form
       onSubmit={handleSubmit}
       aria-label="Filtros de vagas"
-      className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"
+      className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,240px)_minmax(0,180px)_auto] sm:items-end sm:justify-start"
     >
-      <Select
-        id="filter_status"
-        label="Status"
-        options={statusOptions}
-        placeholder="Todos"
-        value={status}
-        onChange={(e) => setStatus(e.target.value)}
-      />
       <Field
         id="filter_company"
         label="Empresa"
@@ -59,9 +50,7 @@ export function JobFilters({ onApply }: { onApply: (filters: Filters) => void })
         value={isRemote}
         onChange={(e) => setIsRemote(e.target.value)}
       />
-      <div className="flex items-end">
-        <Button type="submit">Filtrar</Button>
-      </div>
+      <Button type="submit">Filtrar</Button>
     </form>
   );
 }

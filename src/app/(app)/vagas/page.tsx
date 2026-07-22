@@ -1,62 +1,85 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useJobList } from "@/lib/jobs/use-job-list";
+import { useJobFunnel } from "@/lib/jobs/use-job-funnel";
 import { createJob } from "@/lib/jobs/api";
-import type { JobInput } from "@/lib/jobs/types";
-import { JobFilters } from "@/components/jobs/JobFilters";
+import type { JobInput, JobStatus } from "@/lib/jobs/types";
+import { JobFilters, type JobFieldFilters } from "@/components/jobs/JobFilters";
+import { JobFunnel } from "@/components/jobs/JobFunnel";
+import { JobCard } from "@/components/jobs/JobCard";
 import { JobForm } from "@/components/jobs/JobForm";
-import { JobStatusBadge } from "@/components/jobs/JobStatusBadge";
 
 export default function VagasPage() {
   return <VagasList />;
 }
 
 function VagasList() {
-  const { data, status, applyFilters, page, setPage, reload } = useJobList();
+  const { data, status, filters, applyFilters, page, setPage, reload } = useJobList();
+  const funnel = useJobFunnel({ company: filters.company, is_remote: filters.is_remote });
   const [creating, setCreating] = useState(false);
   const totalPages = data?.pages ?? 0;
+
+  /** Listagem e contagem do funil vêm da mesma origem: recarregam juntas. */
+  function reloadAll() {
+    reload();
+    funnel.reload();
+  }
 
   async function handleCreate(input: JobInput) {
     await createJob(input);
     setCreating(false);
-    reload();
+    reloadAll();
+  }
+
+  /** Chip do funil: seleciona ou limpa o status, preservando os demais filtros. */
+  function handleSelectStatus(next: JobStatus | undefined) {
+    applyFilters({ ...filters, status: next });
+  }
+
+  /** Formulário de filtros: troca empresa/modalidade, preservando o status do funil. */
+  function handleApplyFields(fields: JobFieldFilters) {
+    applyFilters({ ...fields, status: filters.status });
   }
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-6 px-6 py-12">
-      <div className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold tracking-tight">Vagas</h1>
+    <div className="flex flex-col gap-5">
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-h1">Vagas</h1>
+          <p className="text-soft">Seu funil de candidaturas, do primeiro salvo à proposta.</p>
+        </div>
         <button
           onClick={() => setCreating((v) => !v)}
-          className="rounded-md bg-ink px-4 py-2 text-sm font-medium text-ink-inverse hover:opacity-90"
+          className="self-start rounded-control bg-ink px-4.5 py-2.5 font-semibold text-ink-inverse shadow-ink transition-opacity hover:opacity-[.88] sm:self-auto"
         >
           {creating ? "Cancelar" : "Nova vaga"}
         </button>
-      </div>
+      </header>
 
       {creating ? (
-        <section className="rounded-md border border-line p-4">
-          <h2 className="mb-4 text-sm font-semibold text-ink">Nova vaga</h2>
+        <section className="rounded-card border border-line bg-card p-5 shadow-rest">
+          <h2 className="mb-4 text-h2">Nova vaga</h2>
           <JobForm submitLabel="Salvar vaga" onSubmit={handleCreate} />
         </section>
       ) : null}
 
-      <JobFilters onApply={applyFilters} />
+      <JobFunnel counts={funnel.counts} active={filters.status} onSelect={handleSelectStatus} />
+
+      <JobFilters onApply={handleApplyFields} />
 
       {status === "loading" ? (
-        <p role="status" className="text-sm text-soft">
+        <p role="status" className="text-secondary text-soft">
           Carregando vagas…
         </p>
       ) : null}
 
       {status === "error" ? (
         <div className="flex items-center gap-3">
-          <p role="alert" className="text-sm text-rejected-fg">
+          <p role="alert" className="text-secondary text-rejected-fg">
             Não foi possível carregar as vagas.
           </p>
-          <button onClick={reload} className="text-sm font-medium underline">
+          <button onClick={reloadAll} className="text-secondary font-medium underline">
             Tentar novamente
           </button>
         </div>
@@ -68,24 +91,12 @@ function VagasList() {
             <ul className="flex flex-col gap-3">
               {data.items.map((job) => (
                 <li key={job.id}>
-                  <Link
-                    href={`/vagas/${job.id}`}
-                    className="flex items-center justify-between gap-3 rounded-md border border-line px-4 py-3 hover:border-ink"
-                  >
-                    <span className="flex flex-col">
-                      <span className="text-sm font-medium">{job.title}</span>
-                      <span className="text-sm text-soft">
-                        {job.company}
-                        {job.is_remote ? " · Remoto" : job.location ? ` · ${job.location}` : ""}
-                      </span>
-                    </span>
-                    <JobStatusBadge status={job.status} />
-                  </Link>
+                  <JobCard job={job} />
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-sm text-soft">Nenhuma vaga ainda.</p>
+            <p className="text-secondary text-soft">Nenhuma vaga ainda.</p>
           )}
 
           {totalPages > 1 ? (
@@ -93,17 +104,17 @@ function VagasList() {
               <button
                 onClick={() => setPage(page - 1)}
                 disabled={page <= 1}
-                className="text-sm font-medium underline disabled:opacity-50 disabled:no-underline"
+                className="text-secondary font-medium underline disabled:opacity-50 disabled:no-underline"
               >
                 Anterior
               </button>
-              <span className="text-sm text-soft">
+              <span className="text-secondary text-soft">
                 Página {page} de {totalPages}
               </span>
               <button
                 onClick={() => setPage(page + 1)}
                 disabled={page >= totalPages}
-                className="text-sm font-medium underline disabled:opacity-50 disabled:no-underline"
+                className="text-secondary font-medium underline disabled:opacity-50 disabled:no-underline"
               >
                 Próxima
               </button>

@@ -30,7 +30,9 @@
   --color-applied-line: rgba(29, 78, 216, 0.3);
   --color-applied-tint: rgba(29, 78, 216, 0.08);
 
-  --color-interviewing-fg: #b45309;
+  /* handoff traz #b45309, mas sobre o próprio tint dá 4.45:1 no badge de 11.5px e reprova
+     no axe (AA). Escurecido o mínimo necessário (4.99:1) — SKC-48. */
+  --color-interviewing-fg: #a84d08;
   --color-interviewing-line: rgba(180, 83, 9, 0.3);
   --color-interviewing-tint: rgba(180, 83, 9, 0.09);
 
