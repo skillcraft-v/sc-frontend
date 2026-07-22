@@ -61,16 +61,16 @@ export function EvidenceManager({
   }
 
   return (
-    <section className="flex flex-col gap-4 border-t border-hairline pt-6">
-      <h2 className="text-lg font-semibold">Evidências</h2>
+    <section className="flex flex-col gap-4 rounded-card border border-line bg-card p-5 shadow-rest">
+      <h2 className="text-h2">Evidências</h2>
 
       {evidences.length === 0 ? (
-        <p className="text-sm text-soft">Nenhuma evidência ainda.</p>
+        <p className="text-secondary text-soft">Nenhuma evidência ainda.</p>
       ) : (
-        <ul className="flex flex-col gap-2">
+        <ul className="flex flex-col">
           {evidences.map((ev) => (
-            <li key={ev.id} className="flex items-center justify-between gap-3 rounded-md border border-line px-3 py-2 text-sm">
-              <span>
+            <li key={ev.id} className="text-secondary flex items-center justify-between gap-3 border-b border-hairline py-2.5 last:border-b-0">
+              <span className="min-w-0 wrap-break-word">
                 <strong>{EVIDENCE_TYPE_LABELS[ev.type]}</strong>
                 {ev.url ? ` · ${ev.url}` : ""}
                 {ev.description ? ` · ${ev.description}` : ""}
@@ -79,7 +79,7 @@ export function EvidenceManager({
                 type="button"
                 onClick={() => handleRemove(ev.id)}
                 aria-label={`Remover evidência ${EVIDENCE_TYPE_LABELS[ev.type]}`}
-                className="text-sm font-medium text-rejected-fg underline"
+                className="shrink-0 font-medium text-rejected-fg underline"
               >
                 Remover
               </button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { createSkill } from "@/lib/skills/api";
 import type { SkillInput } from "@/lib/skills/types";
 import { SkillForm } from "@/components/skills/SkillForm";
@@ -18,9 +19,17 @@ function NovaSkill() {
   }
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-6 px-6 py-12">
-      <h1 className="text-2xl font-bold tracking-tight">Nova skill</h1>
-      <SkillForm submitLabel="Criar skill" onSubmit={handleCreate} />
+    <div className="flex flex-col gap-5">
+      <header className="flex items-center justify-between gap-4">
+        <h1 className="text-h1">Nova skill</h1>
+        <Link href="/skills" className="text-secondary font-medium underline">
+          Voltar
+        </Link>
+      </header>
+
+      <section className="rounded-card border border-line bg-card p-5 shadow-rest">
+        <SkillForm submitLabel="Criar skill" onSubmit={handleCreate} />
+      </section>
     </div>
   );
 }

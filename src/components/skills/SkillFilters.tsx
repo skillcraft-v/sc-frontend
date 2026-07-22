@@ -1,5 +1,9 @@
 "use client";
 
+/**
+ * Filtros da listagem de skills — categoria, proficiência, tags e busca bilíngue.
+ * Só monta os filtros; a consulta é do hook `use-skill-list` (P-006).
+ */
 import { useState, type FormEvent } from "react";
 import {
   CATEGORY_LABELS,
@@ -40,13 +44,13 @@ export function SkillFilters({ onApply }: { onApply: (filters: Filters) => void 
     <form
       onSubmit={handleSubmit}
       aria-label="Filtros de skills"
-      className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"
+      className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:items-end lg:grid-cols-[repeat(4,minmax(0,1fr))_auto]"
     >
       <Select id="filter_category" label="Categoria" options={categoryOptions} placeholder="Todas" value={category} onChange={(e) => setCategory(e.target.value)} />
       <Select id="filter_proficiency" label="Proficiência" options={proficiencyOptions} placeholder="Todas" value={proficiency} onChange={(e) => setProficiency(e.target.value)} />
       <Field id="filter_tags" label="Tags" placeholder="python, fastapi" value={tags} onChange={(e) => setTags(e.target.value)} />
       <Field id="filter_search" label="Busca (PT/EN)" value={search} onChange={(e) => setSearch(e.target.value)} />
-      <div className="sm:col-span-2 lg:col-span-4">
+      <div className="sm:col-span-2 lg:col-span-1">
         <Button type="submit">Filtrar</Button>
       </div>
     </form>

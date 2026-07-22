@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useSkillList } from "@/lib/skills/use-skill-list";
-import { CATEGORY_LABELS, PROFICIENCY_LABELS } from "@/lib/skills/types";
 import { SkillFilters } from "@/components/skills/SkillFilters";
+import { SkillRow } from "@/components/skills/SkillRow";
 
 export default function SkillsPage() {
   return <SkillsList />;
@@ -14,38 +14,41 @@ function SkillsList() {
   const totalPages = data?.pages ?? 0;
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-6 px-6 py-12">
-      <div className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold tracking-tight">Skills</h1>
+    <div className="flex flex-col gap-5">
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-h1">Skills</h1>
+          <p className="text-soft">Seu repertório técnico, com o nível de cada competência.</p>
+        </div>
         <Link
           href="/skills/nova"
-          className="rounded-md bg-ink px-4 py-2 text-sm font-medium text-ink-inverse hover:opacity-90"
+          className="self-start rounded-control bg-ink px-4.5 py-2.5 font-semibold text-ink-inverse shadow-ink transition-opacity hover:opacity-[.88] sm:self-auto"
         >
           Nova skill
         </Link>
-      </div>
+      </header>
 
       <SkillFilters onApply={applyFilters} />
 
       {status === "loading" ? (
-        <p role="status" className="text-sm text-soft">
+        <p role="status" className="text-secondary text-soft">
           Carregando skills…
         </p>
       ) : null}
 
       {status === "error" ? (
         <div className="flex items-center gap-3">
-          <p role="alert" className="text-sm text-rejected-fg">
+          <p role="alert" className="text-secondary text-rejected-fg">
             Não foi possível carregar as skills.
           </p>
-          <button onClick={reload} className="text-sm font-medium underline">
+          <button onClick={reload} className="text-secondary font-medium underline">
             Tentar novamente
           </button>
         </div>
       ) : null}
 
       {status === "success" && data && data.items.length === 0 ? (
-        <p className="text-sm text-soft">
+        <p className="text-secondary text-soft">
           Nenhuma skill encontrada. Que tal{" "}
           <Link href="/skills/nova" className="font-medium underline">
             criar a primeira
@@ -59,16 +62,7 @@ function SkillsList() {
           <ul className="flex flex-col gap-3">
             {data.items.map((skill) => (
               <li key={skill.id}>
-                <Link
-                  href={`/skills/${skill.id}`}
-                  className="flex flex-col gap-1 rounded-md border border-line px-4 py-3 hover:border-ink"
-                >
-                  <span className="font-medium">{skill.title_pt}</span>
-                  <span className="text-sm text-soft">
-                    {CATEGORY_LABELS[skill.category]} · {PROFICIENCY_LABELS[skill.proficiency]}
-                    {skill.tags.length ? ` · ${skill.tags.join(", ")}` : ""}
-                  </span>
-                </Link>
+                <SkillRow skill={skill} />
               </li>
             ))}
           </ul>
@@ -78,17 +72,17 @@ function SkillsList() {
               <button
                 onClick={() => setPage(page - 1)}
                 disabled={page <= 1}
-                className="text-sm font-medium underline disabled:opacity-50 disabled:no-underline"
+                className="text-secondary font-medium underline disabled:opacity-50 disabled:no-underline"
               >
                 Anterior
               </button>
-              <span className="text-sm text-soft">
+              <span className="text-secondary text-soft">
                 Página {page} de {totalPages}
               </span>
               <button
                 onClick={() => setPage(page + 1)}
                 disabled={page >= totalPages}
-                className="text-sm font-medium underline disabled:opacity-50 disabled:no-underline"
+                className="text-secondary font-medium underline disabled:opacity-50 disabled:no-underline"
               >
                 Próxima
               </button>
