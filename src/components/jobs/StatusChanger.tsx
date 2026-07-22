@@ -47,7 +47,7 @@ export function StatusChanger({ status, onChange }: StatusChangerProps) {
               onClick={() => handleClick(next)}
               disabled={pending !== null}
               aria-busy={pending === next || undefined}
-              className="rounded-md border border-line px-3 py-2 text-sm font-medium transition-opacity hover:opacity-90 disabled:opacity-60"
+              className="rounded-control border border-line bg-card px-3 py-2 text-sm font-medium transition-colors hover:border-ink disabled:opacity-60"
             >
               {pending === next ? "Movendo…" : `Marcar como ${STATUS_LABELS[next]}`}
             </button>

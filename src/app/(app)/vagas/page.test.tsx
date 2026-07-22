@@ -51,11 +51,32 @@ describe("VagasPage", () => {
     expect(screen.getByRole("button", { name: "Tentar novamente" })).toBeInTheDocument();
   });
 
-  it("aplica filtro de status na querystring", async () => {
-    const seen: string[] = [];
+  it("tentar novamente recarrega a listagem e a contagem do funil", async () => {
+    let failing = true;
     server.use(
       http.get(url("/jobs"), ({ request }) => {
-        seen.push(new URL(request.url).searchParams.get("status") ?? "");
+        if (failing) return new HttpResponse(null, { status: 500 });
+        const params = new URL(request.url).searchParams;
+        if (params.get("page_size") !== "1") return HttpResponse.json(empty);
+        return HttpResponse.json({ ...empty, total: 12, page_size: 1 });
+      }),
+    );
+    renderPage();
+    await screen.findByText("Não foi possível carregar as vagas.");
+
+    failing = false;
+    await userEvent.setup().click(screen.getByRole("button", { name: "Tentar novamente" }));
+
+    expect(await screen.findByRole("button", { name: "Salvas 12" })).toBeInTheDocument();
+  });
+
+  it("clicar no chip do funil aplica o filtro de status na querystring", async () => {
+    const listed: string[] = [];
+    server.use(
+      http.get(url("/jobs"), ({ request }) => {
+        const params = new URL(request.url).searchParams;
+        // Ignora as consultas de contagem do funil (page_size=1).
+        if (params.get("page_size") !== "1") listed.push(params.get("status") ?? "");
         return HttpResponse.json(empty);
       }),
     );
@@ -63,10 +84,60 @@ describe("VagasPage", () => {
     await screen.findByText("Nenhuma vaga ainda.");
 
     const user = userEvent.setup();
-    await user.selectOptions(screen.getByLabelText("Status"), "applied");
+    await user.click(await screen.findByRole("button", { name: /Aplicadas/ }));
+
+    await vi.waitFor(() => expect(listed).toContain("applied"));
+  });
+
+  it("chips do funil exibem a contagem por status vinda da API", async () => {
+    const totals: Record<string, number> = {
+      saved: 12,
+      applied: 7,
+      interviewing: 3,
+      offer: 1,
+      rejected: 4,
+      accepted: 1,
+    };
+    server.use(
+      http.get(url("/jobs"), ({ request }) => {
+        const params = new URL(request.url).searchParams;
+        if (params.get("page_size") !== "1") return HttpResponse.json(empty);
+        return HttpResponse.json({
+          ...empty,
+          total: totals[params.get("status") ?? ""] ?? 0,
+          page_size: 1,
+        });
+      }),
+    );
+    renderPage();
+
+    expect(await screen.findByRole("button", { name: "Salvas 12" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Entrevistando 3" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Recusadas 4" })).toBeInTheDocument();
+  });
+
+  it("filtro de empresa preserva o status selecionado no funil", async () => {
+    const listed: URLSearchParams[] = [];
+    server.use(
+      http.get(url("/jobs"), ({ request }) => {
+        const params = new URL(request.url).searchParams;
+        if (params.get("page_size") !== "1") listed.push(params);
+        return HttpResponse.json(empty);
+      }),
+    );
+    renderPage();
+    await screen.findByText("Nenhuma vaga ainda.");
+
+    const user = userEvent.setup();
+    await user.click(await screen.findByRole("button", { name: /Aplicadas/ }));
+    await user.type(screen.getByLabelText("Empresa"), "Acme");
     await user.click(screen.getByRole("button", { name: "Filtrar" }));
 
-    await vi.waitFor(() => expect(seen).toContain("applied"));
+    await vi.waitFor(() =>
+      expect(
+        listed.some((p) => p.get("company") === "Acme" && p.get("status") === "applied"),
+      ).toBe(true),
+    );
   });
 
   it("criar vaga reflete na lista após reload", async () => {
