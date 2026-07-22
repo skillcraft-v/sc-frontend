@@ -74,23 +74,24 @@ export function ProjectSkillsManager({
   const skillOptions = skills.map((s) => ({ value: s.id, label: s.title_pt }));
 
   return (
-    <section className="flex flex-col gap-4 border-t border-hairline pt-6">
-      <h2 className="text-lg font-semibold">Skills do projeto</h2>
+    <section className="flex flex-col gap-3 border-t border-hairline pt-6">
+      <h2 className="text-h2">Skills do projeto</h2>
 
       {links.length === 0 ? (
-        <p className="text-sm text-soft">Nenhuma skill vinculada.</p>
+        <p className="text-secondary text-soft">Nenhuma skill vinculada.</p>
       ) : (
-        <ul className="flex flex-col gap-2">
+        <ul className="divide-y divide-hairline overflow-hidden rounded-card-lg border border-line bg-card">
           {links.map((link) => (
-            <li key={link.skill_id} className="flex items-center justify-between gap-3 rounded-md border border-line px-3 py-2 text-sm">
-              <span>
-                <strong>{titleFor(link.skill_id)}</strong> · peso {link.relevance_weight.toFixed(1)}
+            <li key={link.skill_id} className="flex items-center justify-between gap-3 px-5 py-3">
+              <span className="text-secondary">
+                <strong className="font-semibold text-ink">{titleFor(link.skill_id)}</strong>
+                <span className="text-soft"> · peso {link.relevance_weight.toFixed(1)}</span>
               </span>
               <button
                 type="button"
                 onClick={() => handleUnlink(link.skill_id)}
                 aria-label={`Desvincular ${titleFor(link.skill_id)}`}
-                className="text-sm font-medium text-rejected-fg underline"
+                className="text-secondary font-medium text-rejected-fg underline"
               >
                 Desvincular
               </button>
@@ -103,7 +104,7 @@ export function ProjectSkillsManager({
         {error ? <Alert>{error}</Alert> : null}
         <Select id="link_skill" label="Skill" options={skillOptions} placeholder="Selecione uma skill" value={selected} onChange={(e) => setSelected(e.target.value)} />
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="link_weight" className="text-sm font-medium text-ink">
+          <label htmlFor="link_weight" className="text-secondary font-medium text-ink">
             Peso de relevância: <span aria-live="polite">{weight.toFixed(1)}</span>
           </label>
           <input

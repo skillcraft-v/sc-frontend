@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useResourceList } from "@/lib/career/use-resource-list";
 import { careerErrorMessage } from "@/lib/career/error-messages";
 import {
@@ -15,11 +14,22 @@ import {
 } from "@/lib/career/api";
 import type { Certification, Education, Project } from "@/lib/career/types";
 import { CareerSection } from "@/components/career/CareerSection";
+import { CareerRow } from "@/components/career/CareerRow";
 import { ProjectForm } from "@/components/career/ProjectForm";
 import { EducationForm } from "@/components/career/EducationForm";
 import { CertificationForm } from "@/components/career/CertificationForm";
 import { EducationItem } from "@/components/career/EducationItem";
 import { CertificationItem } from "@/components/career/CertificationItem";
+import { Alert } from "@/components/ui/Alert";
+
+/** "Node.js · Kafka · PostgreSQL" — tecnologias; some se não houver nenhuma. */
+function projectSubtitle(p: Project): string | undefined {
+  return p.technologies.length > 0 ? p.technologies.join(" · ") : undefined;
+}
+
+function projectPeriod(p: Project): string {
+  return `${p.start_date} – ${p.end_date ?? "atual"}`;
+}
 
 export default function CarreiraPage() {
   return <Career />;
@@ -42,55 +52,11 @@ function Career() {
   }
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-12 px-6 py-12">
-      <h1 className="text-2xl font-bold tracking-tight">Carreira</h1>
+    <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-9 px-6 py-12">
+      <h1 className="text-h1">Carreira</h1>
 
       <CareerSection
-        title="Projetos"
-        status={projects.status}
-        isEmpty={projects.items.length === 0}
-        emptyLabel="Nenhum projeto ainda."
-        onReload={projects.reload}
-        renderAddForm={(done) => (
-          <ProjectForm
-            submitLabel="Adicionar projeto"
-            onSubmit={async (input) => {
-              await createProject(input);
-              projects.reload();
-              done();
-            }}
-          />
-        )}
-      >
-        {projectError ? (
-          <p role="alert" className="text-sm text-rejected-fg">
-            {projectError}
-          </p>
-        ) : null}
-        <ul className="flex flex-col gap-3">
-          {projects.items.map((p) => (
-            <li key={p.id} className="flex items-center justify-between gap-3 rounded-md border border-line px-4 py-3">
-              <Link href={`/carreira/projetos/${p.id}`} className="text-sm hover:underline">
-                <span className="font-medium">{p.title}</span>
-                <span className="text-soft">
-                  {" "}
-                  · {p.start_date} – {p.end_date ?? "atual"}
-                </span>
-              </Link>
-              <button
-                onClick={() => handleDeleteProject(p.id)}
-                aria-label={`Excluir projeto ${p.title}`}
-                className="text-sm font-medium text-rejected-fg underline"
-              >
-                Excluir
-              </button>
-            </li>
-          ))}
-        </ul>
-      </CareerSection>
-
-      <CareerSection
-        title="Educação"
+        title="Formação"
         status={education.status}
         isEmpty={education.items.length === 0}
         emptyLabel="Nenhuma formação ainda."
@@ -106,16 +72,14 @@ function Career() {
           />
         )}
       >
-        <ul className="flex flex-col gap-3">
-          {education.items.map((e) => (
-            <EducationItem
-              key={e.id}
-              item={e}
-              onUpdated={(u) => education.setItems((prev) => prev.map((x) => (x.id === u.id ? u : x)))}
-              onDeleted={(id) => education.setItems((prev) => prev.filter((x) => x.id !== id))}
-            />
-          ))}
-        </ul>
+        {education.items.map((e) => (
+          <EducationItem
+            key={e.id}
+            item={e}
+            onUpdated={(u) => education.setItems((prev) => prev.map((x) => (x.id === u.id ? u : x)))}
+            onDeleted={(id) => education.setItems((prev) => prev.filter((x) => x.id !== id))}
+          />
+        ))}
       </CareerSection>
 
       <CareerSection
@@ -135,16 +99,57 @@ function Career() {
           />
         )}
       >
-        <ul className="flex flex-col gap-3">
-          {certifications.items.map((c) => (
-            <CertificationItem
-              key={c.id}
-              item={c}
-              onUpdated={(u) => certifications.setItems((prev) => prev.map((x) => (x.id === u.id ? u : x)))}
-              onDeleted={(id) => certifications.setItems((prev) => prev.filter((x) => x.id !== id))}
-            />
-          ))}
-        </ul>
+        {certifications.items.map((c) => (
+          <CertificationItem
+            key={c.id}
+            item={c}
+            onUpdated={(u) => certifications.setItems((prev) => prev.map((x) => (x.id === u.id ? u : x)))}
+            onDeleted={(id) => certifications.setItems((prev) => prev.filter((x) => x.id !== id))}
+          />
+        ))}
+      </CareerSection>
+
+      <CareerSection
+        title="Projetos"
+        status={projects.status}
+        isEmpty={projects.items.length === 0}
+        emptyLabel="Nenhum projeto ainda."
+        onReload={projects.reload}
+        renderAddForm={(done) => (
+          <ProjectForm
+            submitLabel="Adicionar projeto"
+            onSubmit={async (input) => {
+              await createProject(input);
+              projects.reload();
+              done();
+            }}
+          />
+        )}
+      >
+        {projectError ? (
+          <li className="border-b border-hairline px-5 py-3 last:border-b-0">
+            <Alert>{projectError}</Alert>
+          </li>
+        ) : null}
+        {projects.items.map((p) => (
+          <CareerRow
+            key={p.id}
+            title={p.title}
+            titleHref={`/carreira/projetos/${p.id}`}
+            subtitle={projectSubtitle(p)}
+            description={p.description_pt}
+            period={projectPeriod(p)}
+            actions={
+              <button
+                onClick={() => handleDeleteProject(p.id)}
+                aria-label={`Excluir projeto ${p.title}`}
+                className="text-secondary font-medium text-rejected-fg underline"
+              >
+                Excluir
+              </button>
+            }
+          />
+        ))}
       </CareerSection>
     </div>
   );
