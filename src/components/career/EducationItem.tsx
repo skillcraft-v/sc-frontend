@@ -5,7 +5,10 @@ import { deleteEducation, updateEducation } from "@/lib/career/api";
 import { careerErrorMessage } from "@/lib/career/error-messages";
 import type { Education } from "@/lib/career/types";
 import { EducationForm } from "@/components/career/EducationForm";
+import { CareerRow } from "@/components/career/CareerRow";
 import { Alert } from "@/components/ui/Alert";
+
+const period = (item: Education) => `${item.start_date} – ${item.end_date ?? "atual"}`;
 
 export function EducationItem({
   item,
@@ -31,7 +34,7 @@ export function EducationItem({
 
   if (editing) {
     return (
-      <li className="rounded-md border border-line p-4">
+      <li className="border-b border-hairline p-5 last:border-b-0">
         <EducationForm
           initial={item}
           submitLabel="Salvar"
@@ -41,7 +44,7 @@ export function EducationItem({
             setEditing(false);
           }}
         />
-        <button onClick={() => setEditing(false)} className="mt-2 text-sm underline">
+        <button onClick={() => setEditing(false)} className="text-secondary mt-2 underline">
           Cancelar
         </button>
       </li>
@@ -49,28 +52,31 @@ export function EducationItem({
   }
 
   return (
-    <li className="flex flex-col gap-2 rounded-md border border-line px-4 py-3">
-      {error ? <Alert>{error}</Alert> : null}
-      <div className="flex items-start justify-between gap-3">
-        <div className="text-sm">
-          <p className="font-medium">{item.degree}</p>
-          <p className="text-soft">
-            {item.institution} · {item.start_date} – {item.end_date ?? "atual"}
-          </p>
-        </div>
-        <div className="flex gap-3">
-          <button onClick={() => setEditing(true)} className="text-sm font-medium underline">
-            Editar
-          </button>
-          <button
-            onClick={handleDelete}
-            aria-label={`Excluir formação ${item.degree}`}
-            className="text-sm font-medium text-rejected-fg underline"
-          >
-            Excluir
-          </button>
-        </div>
-      </div>
-    </li>
+    <>
+      {error ? (
+        <li className="border-b border-hairline px-5 py-3 last:border-b-0">
+          <Alert>{error}</Alert>
+        </li>
+      ) : null}
+      <CareerRow
+        title={item.degree}
+        subtitle={item.institution}
+        period={period(item)}
+        actions={
+          <div className="flex gap-3">
+            <button onClick={() => setEditing(true)} className="text-secondary font-medium underline">
+              Editar
+            </button>
+            <button
+              onClick={handleDelete}
+              aria-label={`Excluir formação ${item.degree}`}
+              className="text-secondary font-medium text-rejected-fg underline"
+            >
+              Excluir
+            </button>
+          </div>
+        }
+      />
+    </>
   );
 }

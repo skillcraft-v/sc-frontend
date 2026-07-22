@@ -2,11 +2,11 @@
 
 import { useState, type ReactNode } from "react";
 import type { ResourceListStatus } from "@/lib/career/use-resource-list";
-import { Button } from "@/components/ui/Button";
 
 /**
- * Wrapper de uma seção de carreira: título, botão "Adicionar" (revela o form via
- * render prop), estados loading/erro/vazio e a lista (children).
+ * Wrapper de uma seção de carreira (handoff §Carreira): h2 display + link "+ Adicionar"
+ * fora do card, card único (rounded-card-lg/border-line) com as linhas da lista (children,
+ * normalmente <CareerRow>) e estados loading/erro/vazio dentro do card.
  */
 export function CareerSection({
   title,
@@ -28,42 +28,50 @@ export function CareerSection({
   const [adding, setAdding] = useState(false);
 
   return (
-    <section className="flex flex-col gap-4">
+    <section className="flex flex-col gap-2.5">
       <div className="flex items-center justify-between gap-4">
-        <h2 className="text-xl font-semibold">{title}</h2>
-        <Button type="button" onClick={() => setAdding((v) => !v)}>
-          {adding ? "Cancelar" : "Adicionar"}
-        </Button>
+        <h2 className="text-h2">{title}</h2>
+        <button
+          type="button"
+          onClick={() => setAdding((v) => !v)}
+          className="text-secondary font-semibold text-soft hover:text-ink"
+        >
+          {adding ? "Cancelar" : "+ Adicionar"}
+        </button>
       </div>
 
       {adding ? (
-        <div className="rounded-md border border-line p-4">
+        <div className="rounded-card border border-line bg-card p-4">
           {renderAddForm(() => setAdding(false))}
         </div>
       ) : null}
 
-      {status === "loading" ? (
-        <p role="status" className="text-sm text-soft">
-          Carregando…
-        </p>
-      ) : null}
-
-      {status === "error" ? (
-        <div className="flex items-center gap-3">
-          <p role="alert" className="text-sm text-rejected-fg">
-            Não foi possível carregar.
+      <div className="overflow-hidden rounded-card-lg border border-line bg-card">
+        {status === "loading" && isEmpty ? (
+          <p role="status" className="text-secondary p-5 text-soft">
+            Carregando…
           </p>
-          <button onClick={onReload} className="text-sm font-medium underline">
-            Tentar novamente
-          </button>
-        </div>
-      ) : null}
+        ) : null}
 
-      {status === "success" && isEmpty ? (
-        <p className="text-sm text-soft">{emptyLabel}</p>
-      ) : null}
+        {status === "error" ? (
+          <div className="flex items-center gap-3 p-5">
+            <p role="alert" className="text-secondary text-rejected-fg">
+              Não foi possível carregar.
+            </p>
+            <button onClick={onReload} className="text-secondary font-medium underline">
+              Tentar novamente
+            </button>
+          </div>
+        ) : null}
 
-      {children}
+        {status === "success" && isEmpty ? (
+          <p className="text-secondary p-5 text-soft">{emptyLabel}</p>
+        ) : null}
+
+        {/* Mantém a lista visível durante reload (stale-while-revalidate): reload() é
+            disparado após criar/editar/excluir e não deve apagar os itens já carregados. */}
+        {!isEmpty ? <ul className="divide-y divide-hairline">{children}</ul> : null}
+      </div>
     </section>
   );
 }

@@ -39,7 +39,7 @@ describe("CarreiraPage", () => {
     renderPage();
 
     expect(await screen.findByRole("heading", { name: "Projetos" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Educação" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Formação" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Certificações" })).toBeInTheDocument();
     expect(await screen.findByText("Nenhum projeto ainda.")).toBeInTheDocument();
   });
@@ -59,8 +59,9 @@ describe("CarreiraPage", () => {
     await screen.findByText("Nenhum projeto ainda.");
 
     const user = userEvent.setup();
-    // primeiro "Adicionar" = seção Projetos
-    await user.click(screen.getAllByRole("button", { name: "Adicionar" })[0]!);
+    // ordem das seções: Formação, Certificações, Projetos — último "+ Adicionar" = Projetos
+    const addButtons = screen.getAllByRole("button", { name: "+ Adicionar" });
+    await user.click(addButtons[addButtons.length - 1]!);
     await user.type(screen.getByLabelText("Título"), "Plataforma X");
     fireEvent.change(screen.getByLabelText("Início"), { target: { value: "2024-01-01" } });
     await user.click(screen.getByRole("button", { name: "Adicionar projeto" }));

@@ -5,7 +5,11 @@ import { deleteCertification, updateCertification } from "@/lib/career/api";
 import { careerErrorMessage } from "@/lib/career/error-messages";
 import type { Certification } from "@/lib/career/types";
 import { CertificationForm } from "@/components/career/CertificationForm";
+import { CareerRow } from "@/components/career/CareerRow";
 import { Alert } from "@/components/ui/Alert";
+
+const period = (item: Certification) =>
+  `${item.issued_at}${item.expires_at ? ` · válida até ${item.expires_at}` : ""}`;
 
 export function CertificationItem({
   item,
@@ -31,7 +35,7 @@ export function CertificationItem({
 
   if (editing) {
     return (
-      <li className="rounded-md border border-line p-4">
+      <li className="border-b border-hairline p-5 last:border-b-0">
         <CertificationForm
           initial={item}
           submitLabel="Salvar"
@@ -41,7 +45,7 @@ export function CertificationItem({
             setEditing(false);
           }}
         />
-        <button onClick={() => setEditing(false)} className="mt-2 text-sm underline">
+        <button onClick={() => setEditing(false)} className="text-secondary mt-2 underline">
           Cancelar
         </button>
       </li>
@@ -49,29 +53,31 @@ export function CertificationItem({
   }
 
   return (
-    <li className="flex flex-col gap-2 rounded-md border border-line px-4 py-3">
-      {error ? <Alert>{error}</Alert> : null}
-      <div className="flex items-start justify-between gap-3">
-        <div className="text-sm">
-          <p className="font-medium">{item.name}</p>
-          <p className="text-soft">
-            {item.issuer} · emitida em {item.issued_at}
-            {item.expires_at ? ` · expira em ${item.expires_at}` : ""}
-          </p>
-        </div>
-        <div className="flex gap-3">
-          <button onClick={() => setEditing(true)} className="text-sm font-medium underline">
-            Editar
-          </button>
-          <button
-            onClick={handleDelete}
-            aria-label={`Excluir certificação ${item.name}`}
-            className="text-sm font-medium text-rejected-fg underline"
-          >
-            Excluir
-          </button>
-        </div>
-      </div>
-    </li>
+    <>
+      {error ? (
+        <li className="border-b border-hairline px-5 py-3 last:border-b-0">
+          <Alert>{error}</Alert>
+        </li>
+      ) : null}
+      <CareerRow
+        title={item.name}
+        subtitle={item.issuer}
+        period={period(item)}
+        actions={
+          <div className="flex gap-3">
+            <button onClick={() => setEditing(true)} className="text-secondary font-medium underline">
+              Editar
+            </button>
+            <button
+              onClick={handleDelete}
+              aria-label={`Excluir certificação ${item.name}`}
+              className="text-secondary font-medium text-rejected-fg underline"
+            >
+              Excluir
+            </button>
+          </div>
+        }
+      />
+    </>
   );
 }
