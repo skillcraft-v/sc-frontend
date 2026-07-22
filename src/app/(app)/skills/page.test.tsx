@@ -60,6 +60,25 @@ describe("SkillsPage", () => {
     expect(await screen.findByText("FastAPI")).toBeInTheDocument();
   });
 
+  it("a barra de proficiência da linha reflete o nível vindo da API", async () => {
+    server.use(
+      http.get(url("/skills"), () =>
+        HttpResponse.json({
+          items: [{ ...summary("s1", "FastAPI"), proficiency: "expert" }],
+          total: 1,
+          page: 1,
+          page_size: 20,
+          pages: 1,
+        }),
+      ),
+    );
+    renderPage();
+
+    const bar = await screen.findByRole("progressbar", { name: "Proficiência" });
+    expect(bar).toHaveAttribute("aria-valuenow", "4");
+    expect(bar).toHaveAttribute("aria-valuetext", "Especialista");
+  });
+
   it("mostra estado vazio quando não há skills", async () => {
     server.use(
       http.get(url("/skills"), () =>
