@@ -1,4 +1,4 @@
-import { render, screen, cleanup } from "@testing-library/react";
+import { render, screen, cleanup, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import AdaptacaoPage from "@/app/(app)/adaptacoes/[id]/page";
 import { SessionProvider } from "@/lib/auth/session";
@@ -67,13 +67,15 @@ describe("AdaptacaoPage", () => {
     expect(await screen.findByText(/expirou/i)).toBeInTheDocument();
   });
 
-  it("mostra estado de processamento enquanto não terminal", async () => {
+  it("mostra o pipeline de etapas enquanto não terminal", async () => {
     server.use(
       http.get(url("/adaptations/ad1"), () =>
         HttpResponse.json({ id: "ad1", job_id: "j1", status: "analyzing" }),
       ),
     );
     renderPage();
-    expect(await screen.findByText(/Analisando seu perfil com IA/i)).toBeInTheDocument();
+    const list = await screen.findByRole("list", { name: "Progresso da adaptação" });
+    expect(within(list).getByText("Cruzando com seu perfil")).toBeInTheDocument();
+    expect(within(list).getAllByText("em andamento…")).toHaveLength(1);
   });
 });
