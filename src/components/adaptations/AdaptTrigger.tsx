@@ -34,7 +34,10 @@ export function AdaptTrigger({ onAdapt }: { onAdapt: (language: Language) => Pro
   }
 
   return (
-    <section className="flex flex-col gap-3" aria-label="Adaptar currículo">
+    <section
+      className="flex flex-col gap-3 rounded-panel border border-line bg-card p-6 shadow-rest"
+      aria-label="Adaptar currículo"
+    >
       <h2 className="text-sm font-semibold text-ink">Adaptar currículo para esta vaga</h2>
       {error ? <Alert>{error}</Alert> : null}
       <div className="flex flex-wrap items-end gap-3">
@@ -45,8 +48,8 @@ export function AdaptTrigger({ onAdapt }: { onAdapt: (language: Language) => Pro
           value={language}
           onChange={(e) => setLanguage(e.target.value as Language)}
         />
-        <Button type="button" onClick={handleClick} pending={pending} pendingLabel="Gerando…">
-          Gerar currículo adaptado
+        <Button type="button" onClick={handleClick} pending={pending} pendingLabel="Adaptando…">
+          ⚡ Adaptar currículo
         </Button>
       </div>
     </section>

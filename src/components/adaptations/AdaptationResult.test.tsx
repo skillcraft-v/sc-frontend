@@ -1,4 +1,4 @@
-import { render, screen, cleanup } from "@testing-library/react";
+import { render, screen, cleanup, within } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { axe } from "vitest-axe";
 import { AdaptationResult } from "@/components/adaptations/AdaptationResult";
@@ -43,5 +43,44 @@ describe("AdaptationResult", () => {
     const { container } = render(<AdaptationResult adaptation={completed} />);
     const results = await axe(container, { rules: { "color-contrast": { enabled: false } } });
     expect(results.violations).toEqual([]);
+  });
+
+  describe("pipeline: mapeia cada estado da API para a etapa visual correta", () => {
+    /** Etapa ativa é a única com `aria-current="step"` — sinal semântico, não classe CSS. */
+    function activeStepLabel(list: HTMLElement): string | null {
+      const item = within(list).getByRole("listitem", { current: "step" });
+      return within(item).getByText(/^(Analisando|Cruzando|Reescrevendo|Gerando)/).textContent;
+    }
+
+    it("pending: etapa 1 (Analisando a vaga) ativa, demais pendentes", () => {
+      render(<AdaptationResult adaptation={{ id: "ad1", job_id: "j1", status: "pending" }} />);
+      const list = screen.getByRole("list", { name: "Progresso da adaptação" });
+      expect(activeStepLabel(list)).toBe("Analisando a vaga");
+      expect(within(list).getAllByText("em andamento…")).toHaveLength(1);
+      expect(within(list).queryByText("concluído")).not.toBeInTheDocument();
+    });
+
+    it("analyzing: etapa 1 concluída, etapa 2 (Cruzando com seu perfil) ativa", () => {
+      render(<AdaptationResult adaptation={{ id: "ad1", job_id: "j1", status: "analyzing" }} />);
+      const list = screen.getByRole("list", { name: "Progresso da adaptação" });
+      expect(activeStepLabel(list)).toBe("Cruzando com seu perfil");
+      expect(within(list).getAllByText("concluído")).toHaveLength(1);
+    });
+
+    it("rendering: as 3 primeiras etapas concluídas, 'Gerando documentos' ativa", () => {
+      render(<AdaptationResult adaptation={{ id: "ad1", job_id: "j1", status: "rendering" }} />);
+      const list = screen.getByRole("list", { name: "Progresso da adaptação" });
+      expect(activeStepLabel(list)).toBe("Gerando documentos");
+      expect(within(list).getAllByText("concluído")).toHaveLength(3);
+      expect(within(list).getAllByText("em andamento…")).toHaveLength(1);
+    });
+
+    it("completed: as 4 etapas concluídas, nenhuma ativa", () => {
+      render(<AdaptationResult adaptation={{ id: "ad1", job_id: "j1", status: "completed" }} />);
+      const list = screen.getByRole("list", { name: "Progresso da adaptação" });
+      expect(within(list).queryByRole("listitem", { current: "step" })).not.toBeInTheDocument();
+      expect(within(list).getAllByText("concluído")).toHaveLength(4);
+      expect(within(list).queryByText("em andamento…")).not.toBeInTheDocument();
+    });
   });
 });

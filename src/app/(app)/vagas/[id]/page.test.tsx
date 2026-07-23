@@ -123,7 +123,7 @@ describe("VagaPage", () => {
     renderPage();
     await screen.findByRole("heading", { name: "Backend Dev" });
 
-    await userEvent.click(screen.getByRole("button", { name: "Gerar currículo adaptado" }));
+    await userEvent.click(screen.getByRole("button", { name: "⚡ Adaptar currículo" }));
     await vi.waitFor(() => expect(pushMock).toHaveBeenCalledWith("/adaptacoes/ad9"));
   });
 
@@ -137,7 +137,7 @@ describe("VagaPage", () => {
     renderPage();
     await screen.findByRole("heading", { name: "Backend Dev" });
 
-    await userEvent.click(screen.getByRole("button", { name: "Gerar currículo adaptado" }));
+    await userEvent.click(screen.getByRole("button", { name: "⚡ Adaptar currículo" }));
     expect(await screen.findByText(/limite de adaptações por hora/i)).toBeInTheDocument();
   });
 

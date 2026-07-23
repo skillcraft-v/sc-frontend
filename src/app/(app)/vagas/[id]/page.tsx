@@ -134,9 +134,7 @@ function VagaDetalhe() {
 
       <StatusChanger status={job.status} onChange={handleStatus} />
 
-      <div className="border-t border-hairline pt-6">
-        <AdaptTrigger onAdapt={handleAdapt} />
-      </div>
+      <AdaptTrigger onAdapt={handleAdapt} />
 
       <section className="flex flex-col gap-3 border-t border-hairline pt-6">
         <h2 className="text-sm font-semibold text-ink">Editar vaga</h2>

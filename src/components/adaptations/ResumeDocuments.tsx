@@ -76,9 +76,16 @@ export function ResumeDocuments({ adaptationId }: { adaptationId: string }) {
       {error ? <Alert>{error}</Alert> : null}
 
       <div className="flex flex-wrap items-end gap-3">
-        <Button type="button" onClick={handleDownload} pending={downloading} pendingLabel="Baixando…">
-          Baixar PDF
-        </Button>
+        <button
+          type="button"
+          onClick={handleDownload}
+          disabled={downloading}
+          aria-busy={downloading || undefined}
+          className="inline-flex items-center gap-2 rounded-chip border border-line bg-subtle-bg px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-ink disabled:opacity-60"
+        >
+          <span aria-hidden="true">↓</span>
+          {downloading ? "Baixando…" : "Baixar PDF"}
+        </button>
         <Select
           id="regen_language"
           label="Regenerar em outro idioma"
@@ -97,16 +104,13 @@ export function ResumeDocuments({ adaptationId }: { adaptationId: string }) {
       </div>
 
       {documents && documents.length > 0 ? (
-        <ul className="flex flex-col gap-2">
+        <ul className="flex flex-col divide-y divide-hairline">
           {documents.map((doc) => (
-            <li
-              key={doc.id}
-              className="flex items-center justify-between gap-3 rounded-md border border-line px-4 py-2 text-sm"
-            >
+            <li key={doc.id} className="flex items-center justify-between gap-3 py-2.5 text-sm">
               <span className="text-soft">
                 {LANGUAGE_LABELS[doc.language]} · {Math.round(doc.file_size / 1024)} KB
               </span>
-              <span className="text-soft">{doc.generated_at}</span>
+              <span className="text-meta text-soft">{doc.generated_at}</span>
             </li>
           ))}
         </ul>
