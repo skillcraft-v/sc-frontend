@@ -59,6 +59,14 @@ export interface JobSummary {
   location?: string | null;
   created_at: string;
   applied_at?: string | null;
+  /**
+   * Score de compatibilidade com o catálogo ativo do usuário (0–100), calculado on-read pelo
+   * backend (SKC-55, JOB-07) — sem IA, sem cálculo no cliente (P-006). Opcionais para
+   * retrocompatibilidade: card degrada sem o bloco quando ausentes.
+   */
+  compatibility_score?: number | null;
+  matched_skills?: number | null;
+  total_skills?: number | null;
 }
 
 /** Vaga completa (`GET /jobs/{id}`). */
