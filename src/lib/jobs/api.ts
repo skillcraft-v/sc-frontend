@@ -8,6 +8,7 @@ import type {
   Job,
   JobAdaptationSummary,
   JobFilters,
+  JobImportPayload,
   JobInput,
   JobStatus,
   JobSummary,
@@ -59,3 +60,11 @@ export const changeJobStatus = (
 
 export const listJobAdaptations = (id: string): Promise<JobAdaptationSummary[]> =>
   api.get<JobAdaptationSummary[]>(`/jobs/${id}/adaptations`);
+
+/**
+ * Importa uma vaga a partir de uma URL pública (`POST /jobs/import`, SKC-53): fetch +
+ * parsing heurístico no backend, sem IA. Não persiste — devolve o payload para revisão
+ * no `JobForm`; a criação continua por `createJob` (P-006).
+ */
+export const importJob = (url: string): Promise<JobImportPayload> =>
+  api.post<JobImportPayload>("/jobs/import", { url });

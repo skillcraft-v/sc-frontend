@@ -11,6 +11,8 @@ describe("jobErrorMessage — matriz FDD-JOB §6", () => {
     ["INVALID_STATUS_TRANSITION", /não permitida/i],
     ["JOB_NOT_FOUND", /vaga não encontrada/i],
     ["VALIDATION_ERROR", /campos destacados/i], // transversal (COMMON_MESSAGES)
+    ["FETCH_FAILED", /não foi possível acessar/i],
+    ["CONTENT_NOT_RECOGNIZED", /não encontramos título ou descrição/i],
   ])("traduz %s para pt-BR", (code, expected) => {
     expect(jobErrorMessage(make(code))).toMatch(expected);
   });

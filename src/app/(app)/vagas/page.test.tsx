@@ -174,4 +174,35 @@ describe("VagasPage", () => {
 
     expect(await screen.findByText("Backend Dev")).toBeInTheDocument();
   });
+
+  it("importar por URL abre o form de nova vaga já preenchido, sem persistir", async () => {
+    server.use(
+      http.get(url("/jobs"), () => HttpResponse.json(empty)),
+      http.post(url("/jobs/import"), () =>
+        HttpResponse.json({
+          title: "Senior Python Developer",
+          company: "Acme",
+          description: "d".repeat(120),
+          location: "Remote",
+          is_remote: true,
+          salary_range: null,
+          url: "https://exemplo.com/vaga",
+        }),
+      ),
+    );
+    renderPage();
+    await screen.findByText("Nenhuma vaga ainda.");
+
+    const user = userEvent.setup();
+    await user.type(screen.getByLabelText(/link da vaga/i), "https://exemplo.com/vaga");
+    await user.click(screen.getByRole("button", { name: "Importar" }));
+
+    const form = await screen.findByRole("heading", { name: "Nova vaga" });
+    const section = form.closest("section")!;
+    expect(within(section).getByLabelText("Cargo")).toHaveValue("Senior Python Developer");
+    expect(within(section).getByLabelText("Empresa")).toHaveValue("Acme");
+    expect(within(section).getByLabelText("Localização (opcional)")).toHaveValue("Remote");
+    // Não persiste automaticamente: continua exigindo o clique em "Salvar vaga".
+    expect(within(section).getByRole("button", { name: "Salvar vaga" })).toBeInTheDocument();
+  });
 });

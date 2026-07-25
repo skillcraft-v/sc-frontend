@@ -4,11 +4,12 @@ import { useState } from "react";
 import { useJobList } from "@/lib/jobs/use-job-list";
 import { useJobFunnel } from "@/lib/jobs/use-job-funnel";
 import { createJob } from "@/lib/jobs/api";
-import type { JobInput, JobStatus } from "@/lib/jobs/types";
+import type { JobImportPayload, JobInput, JobStatus } from "@/lib/jobs/types";
 import { JobFilters, type JobFieldFilters } from "@/components/jobs/JobFilters";
 import { JobFunnel } from "@/components/jobs/JobFunnel";
 import { JobCard } from "@/components/jobs/JobCard";
 import { JobForm } from "@/components/jobs/JobForm";
+import { JobImportBar } from "@/components/jobs/JobImportBar";
 
 export default function VagasPage() {
   return <VagasList />;
@@ -18,7 +19,14 @@ function VagasList() {
   const { data, status, filters, applyFilters, page, setPage, reload } = useJobList();
   const funnel = useJobFunnel({ company: filters.company, is_remote: filters.is_remote });
   const [creating, setCreating] = useState(false);
+  const [importedJob, setImportedJob] = useState<JobImportPayload | undefined>(undefined);
   const totalPages = data?.pages ?? 0;
+
+  /** Sucesso do import abre o mesmo form de "Nova vaga", pré-preenchido — sem persistir (P-006). */
+  function handleImported(payload: JobImportPayload) {
+    setImportedJob(payload);
+    setCreating(true);
+  }
 
   /** Listagem e contagem do funil vêm da mesma origem: recarregam juntas. */
   function reloadAll() {
@@ -29,6 +37,7 @@ function VagasList() {
   async function handleCreate(input: JobInput) {
     await createJob(input);
     setCreating(false);
+    setImportedJob(undefined);
     reloadAll();
   }
 
@@ -50,17 +59,22 @@ function VagasList() {
           <p className="text-soft">Seu funil de candidaturas, do primeiro salvo à proposta.</p>
         </div>
         <button
-          onClick={() => setCreating((v) => !v)}
+          onClick={() => {
+            setCreating((v) => !v);
+            setImportedJob(undefined);
+          }}
           className="self-start rounded-control bg-ink px-4.5 py-2.5 font-semibold text-ink-inverse shadow-ink transition-opacity hover:opacity-[.88] sm:self-auto"
         >
           {creating ? "Cancelar" : "Nova vaga"}
         </button>
       </header>
 
+      <JobImportBar onImported={handleImported} />
+
       {creating ? (
         <section className="rounded-card border border-line bg-card p-5 shadow-rest">
           <h2 className="mb-4 text-h2">Nova vaga</h2>
-          <JobForm submitLabel="Salvar vaga" onSubmit={handleCreate} />
+          <JobForm initial={importedJob} submitLabel="Salvar vaga" onSubmit={handleCreate} />
         </section>
       ) : null}
 

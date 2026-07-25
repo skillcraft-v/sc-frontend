@@ -5,6 +5,7 @@ import {
   createJob,
   deleteJob,
   getJob,
+  importJob,
   listJobAdaptations,
   listJobs,
   updateJob,
@@ -107,6 +108,25 @@ describe("chamadas tipadas", () => {
       }),
     );
     expect(await changeJobStatus("j1", "interviewing")).toMatchObject({ status: "interviewing" });
+  });
+
+  it("importJob envia a URL e retorna o payload pré-preenchido", async () => {
+    server.use(
+      http.post(url("/jobs/import"), async ({ request }) => {
+        const body = (await request.json()) as { url: string };
+        return HttpResponse.json({
+          title: "Senior Python Developer",
+          company: "Acme",
+          description: "x".repeat(120),
+          location: "Remote",
+          is_remote: true,
+          salary_range: null,
+          url: body.url,
+        });
+      }),
+    );
+    const payload = await importJob("https://exemplo.com/vaga");
+    expect(payload).toMatchObject({ title: "Senior Python Developer", url: "https://exemplo.com/vaga" });
   });
 
   it("listJobAdaptations retorna a lista resumida", async () => {

@@ -2,15 +2,22 @@
 
 import { useState, type FormEvent } from "react";
 import { jobErrorMessage, fieldErrors } from "@/lib/jobs/error-messages";
-import { MIN_DESCRIPTION_LENGTH, type Job, type JobInput } from "@/lib/jobs/types";
+import { MIN_DESCRIPTION_LENGTH, type JobInput } from "@/lib/jobs/types";
 import { Field } from "@/components/ui/Field";
 import { Textarea } from "@/components/ui/Textarea";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { Button } from "@/components/ui/Button";
 import { Alert } from "@/components/ui/Alert";
 
+/**
+ * Valores iniciais do form — aceita tanto uma vaga completa (edição) quanto o payload
+ * parcial de `POST /jobs/import` (SKC-53, sem id/status, campos opcionais em `null`).
+ * Campos ausentes viram vazio, igual à edição manual.
+ */
+type JobFormInitial = { [K in keyof JobInput]?: JobInput[K] | null };
+
 interface JobFormProps {
-  initial?: Job;
+  initial?: JobFormInitial;
   submitLabel: string;
   onSubmit: (input: JobInput) => Promise<void>;
 }
