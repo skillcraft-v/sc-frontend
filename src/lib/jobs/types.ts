@@ -98,3 +98,17 @@ export interface JobAdaptationSummary {
 
 /** Mínimo de caracteres exigido na descrição (JOB-03). Validação de UX é cortesia (P-006). */
 export const MIN_DESCRIPTION_LENGTH = 100;
+
+/**
+ * Payload pré-preenchido de `POST /jobs/import` (SKC-53) — extração heurística, sem IA.
+ * Não persiste: todos os campos são opcionais exceto `is_remote`/`url` (FDD-JOB §5).
+ */
+export interface JobImportPayload {
+  title?: string | null;
+  company?: string | null;
+  description?: string | null;
+  location?: string | null;
+  is_remote: boolean;
+  salary_range?: string | null;
+  url: string;
+}

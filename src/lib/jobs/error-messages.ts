@@ -9,6 +9,9 @@ const JOB_MESSAGES: Record<string, string> = {
   DESCRIPTION_TOO_SHORT: "A descrição da vaga precisa ter ao menos 100 caracteres.",
   INVALID_STATUS_TRANSITION: "Transição de status não permitida para esta vaga.",
   JOB_NOT_FOUND: "Vaga não encontrada.",
+  FETCH_FAILED: "Não foi possível acessar essa URL. Verifique o link e tente novamente.",
+  CONTENT_NOT_RECOGNIZED:
+    "Não encontramos título ou descrição nessa página. Preencha a vaga manualmente.",
 };
 
 /** Mensagem pt-BR para um erro do domínio JOB. */
