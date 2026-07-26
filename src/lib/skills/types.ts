@@ -113,3 +113,35 @@ export interface SkillFilters {
   tags?: string;
   search?: string;
 }
+
+/**
+ * Sugestão automática de skill (SKC-57, SKL-06/07): heurística sem IA, a partir de um
+ * dicionário estático casado contra as vagas ativas do usuário — já deduplicada contra o
+ * catálogo e contra decisões anteriores pelo backend (P-006). `matched_job_ids` não é
+ * exibido nesta task (fora do handoff §Skills).
+ */
+export interface SkillSuggestion {
+  key: string;
+  title_pt: string;
+  title_en: string;
+  description_pt: string;
+  description_en: string;
+  category: SkillCategory;
+  tags: string[];
+  matched_job_ids: string[];
+}
+
+/** Item do resultado de `POST /skills/suggestions/accept-all` (SKL-09). */
+export interface AcceptAllResultItem {
+  key: string;
+  status: "created" | "error";
+  skill_id?: string | null;
+  error_code?: string | null;
+}
+
+/** Resposta de `POST /skills/suggestions/accept-all`. */
+export interface AcceptAllSuggestionsResult {
+  results: AcceptAllResultItem[];
+  accepted_count: number;
+  failed_count: number;
+}

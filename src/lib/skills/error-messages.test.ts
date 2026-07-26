@@ -13,6 +13,8 @@ describe("skillErrorMessage — matriz FDD-SKL §6", () => {
     ["EMPTY_EVIDENCE", /url ou uma descrição/i],
     ["EVIDENCE_NOT_FOUND", /evidência não encontrada/i],
     ["VALIDATION_ERROR", /campos destacados/i], // transversal
+    ["SUGGESTION_NOT_FOUND", /não existe mais/i],
+    ["SUGGESTION_ALREADY_DECIDED", /já foi decidida/i],
   ])("traduz %s para pt-BR", (code, expected) => {
     expect(skillErrorMessage(make(code))).toMatch(expected);
   });

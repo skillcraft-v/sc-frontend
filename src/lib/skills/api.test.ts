@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import {
+  acceptAllSkillSuggestions,
+  acceptSkillSuggestion,
   addEvidence,
   buildSkillsQuery,
   createSkill,
@@ -7,6 +9,7 @@ import {
   deleteSkill,
   getSkill,
   listSkills,
+  listSkillSuggestions,
   updateSkill,
 } from "@/lib/skills/api";
 import { clearTokens } from "@/lib/auth-tokens";
@@ -93,5 +96,61 @@ describe("chamadas tipadas", () => {
     );
     expect(await addEvidence("s1", { type: "github", url: "https://x" })).toMatchObject({ id: "e1" });
     expect(await deleteEvidence("e1")).toBeNull();
+  });
+
+  it("listSkillSuggestions busca uma página só, com page_size generoso (A2)", async () => {
+    server.use(
+      http.get(url("/skills/suggestions"), ({ request }) => {
+        const params = new URL(request.url).searchParams;
+        expect(params.get("page")).toBe("1");
+        expect(params.get("page_size")).toBe("50");
+        return HttpResponse.json({
+          items: [
+            {
+              key: "docker",
+              title_pt: "Docker",
+              title_en: "Docker",
+              description_pt: "d",
+              description_en: "d",
+              category: "devops",
+              tags: ["docker"],
+              matched_job_ids: ["j1"],
+            },
+          ],
+          total: 1,
+          page: 1,
+          page_size: 50,
+          pages: 1,
+        });
+      }),
+    );
+    const res = await listSkillSuggestions();
+    expect(res.items).toHaveLength(1);
+    expect(res.items[0]).toMatchObject({ key: "docker", title_pt: "Docker" });
+  });
+
+  it("acceptSkillSuggestion chama o endpoint da chave e retorna a skill criada", async () => {
+    server.use(
+      http.post(url("/skills/suggestions/docker/accept"), () =>
+        HttpResponse.json({ id: "s9", title_pt: "Docker", title_en: "Docker" }),
+      ),
+    );
+    const skill = await acceptSkillSuggestion("docker");
+    expect(skill).toMatchObject({ id: "s9", title_pt: "Docker" });
+  });
+
+  it("acceptAllSkillSuggestions retorna o resumo de resultados", async () => {
+    server.use(
+      http.post(url("/skills/suggestions/accept-all"), () =>
+        HttpResponse.json({
+          results: [{ key: "docker", status: "created", skill_id: "s9", error_code: null }],
+          accepted_count: 1,
+          failed_count: 0,
+        }),
+      ),
+    );
+    const res = await acceptAllSkillSuggestions();
+    expect(res).toMatchObject({ accepted_count: 1, failed_count: 0 });
+    expect(res.results[0]).toMatchObject({ key: "docker", status: "created" });
   });
 });
