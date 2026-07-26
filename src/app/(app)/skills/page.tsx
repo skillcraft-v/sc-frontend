@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSkillList } from "@/lib/skills/use-skill-list";
 import { SkillFilters } from "@/components/skills/SkillFilters";
 import { SkillRow } from "@/components/skills/SkillRow";
+import { SkillSuggestions } from "@/components/skills/SkillSuggestions";
 
 export default function SkillsPage() {
   return <SkillsList />;
@@ -27,6 +28,8 @@ function SkillsList() {
           Nova skill
         </Link>
       </header>
+
+      <SkillSuggestions onAccepted={reload} />
 
       <SkillFilters onApply={applyFilters} />
 

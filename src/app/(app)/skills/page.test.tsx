@@ -34,7 +34,12 @@ beforeEach(() => {
   clearTokens();
   window.localStorage.clear();
   setTokens({ access_token: "a", refresh_token: "r" });
-  server.use(http.get(url("/auth/me"), () => HttpResponse.json({ id: "u1", email: "u@x.com", full_name: "U" })));
+  server.use(
+    http.get(url("/auth/me"), () => HttpResponse.json({ id: "u1", email: "u@x.com", full_name: "U" })),
+    http.get(url("/skills/suggestions"), () =>
+      HttpResponse.json({ items: [], total: 0, page: 1, page_size: 50, pages: 0 }),
+    ),
+  );
 });
 afterEach(() => cleanup());
 
@@ -111,5 +116,50 @@ describe("SkillsPage", () => {
 
     const nav = screen.getByRole("navigation", { name: "Paginação" });
     expect(within(nav).getByText(/Página 2 de 2/)).toBeInTheDocument();
+  });
+
+  it("aceitar uma sugestão recarrega a listagem de skills sem reload manual", async () => {
+    let skillsCalls = 0;
+    server.use(
+      http.get(url("/skills"), () => {
+        skillsCalls += 1;
+        return HttpResponse.json({
+          items: skillsCalls > 1 ? [summary("s1", "Docker")] : [],
+          total: skillsCalls > 1 ? 1 : 0,
+          page: 1,
+          page_size: 20,
+          pages: skillsCalls > 1 ? 1 : 0,
+        });
+      }),
+      http.get(url("/skills/suggestions"), () =>
+        HttpResponse.json({
+          items: [
+            {
+              key: "docker",
+              title_pt: "Docker",
+              title_en: "Docker",
+              description_pt: "d",
+              description_en: "d",
+              category: "devops",
+              tags: ["docker"],
+              matched_job_ids: ["j1"],
+            },
+          ],
+          total: 1,
+          page: 1,
+          page_size: 50,
+          pages: 1,
+        }),
+      ),
+      http.post(url("/skills/suggestions/docker/accept"), () =>
+        HttpResponse.json({ id: "s1", title_pt: "Docker", title_en: "Docker" }),
+      ),
+    );
+    renderPage();
+
+    await screen.findByText(/Detectamos 1 skill/i);
+    await userEvent.click(screen.getByRole("button", { name: "+ Docker" }));
+
+    expect(await screen.findByText("Docker")).toBeInTheDocument();
   });
 });

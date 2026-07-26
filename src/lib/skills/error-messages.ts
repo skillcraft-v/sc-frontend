@@ -12,6 +12,8 @@ const SKL_MESSAGES: Record<string, string> = {
   SKILL_NOT_FOUND: "Skill não encontrada.",
   EMPTY_EVIDENCE: "Informe ao menos uma URL ou uma descrição para a evidência.",
   EVIDENCE_NOT_FOUND: "Evidência não encontrada.",
+  SUGGESTION_NOT_FOUND: "Essa sugestão não existe mais.",
+  SUGGESTION_ALREADY_DECIDED: "Essa sugestão já foi decidida antes.",
 };
 
 /** Mensagem pt-BR para um erro do domínio SKL. */
