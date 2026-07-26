@@ -1,9 +1,11 @@
-import { render, screen, cleanup, act } from "@testing-library/react";
+import { render, screen, cleanup, act, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { axe } from "vitest-axe";
 import { Sidebar } from "@/components/ui/Sidebar";
 import { setViewport } from "@/test/viewport";
+import { server } from "@/test/msw/server";
+import { http, HttpResponse, url } from "@/test/msw/handlers";
 
 const logoutMock = vi.fn();
 vi.mock("@/lib/auth/session", () => ({
@@ -19,6 +21,13 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
 }));
 
+beforeEach(() => {
+  server.use(
+    http.get(url("/users/me/completeness"), () =>
+      HttpResponse.json({ percentage: 62, next_hint: "skills" }),
+    ),
+  );
+});
 afterEach(() => {
   cleanup();
   logoutMock.mockClear();
@@ -65,6 +74,23 @@ describe("Sidebar", () => {
 
     expect(screen.getByRole("link", { name: "Skills" })).toHaveAttribute("aria-current", "page");
     expect(screen.getByRole("link", { name: "Vagas" })).not.toHaveAttribute("aria-current");
+  });
+
+  it("renderiza o card de completude com o percentual e a dica da API", async () => {
+    render(<Sidebar />);
+    expect(await screen.findByText("Perfil 62% completo")).toBeInTheDocument();
+    expect(screen.getByText(/adicione mais skills/i)).toBeInTheDocument();
+  });
+
+  it("falha ao carregar a completude não quebra a navegação", async () => {
+    server.use(
+      http.get(url("/users/me/completeness"), () => new HttpResponse(null, { status: 500 })),
+    );
+    render(<Sidebar />);
+
+    await waitFor(() => expect(screen.queryByText(/completo/i)).not.toBeInTheDocument());
+    expect(screen.getByRole("link", { name: "Vagas" })).toHaveAttribute("href", "/vagas");
+    expect(screen.getByRole("button", { name: "Sair" })).toBeInTheDocument();
   });
 
   it("chama logout ao clicar em Sair", async () => {

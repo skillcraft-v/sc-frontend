@@ -42,3 +42,31 @@ export interface ProfileUpdateInput {
   headline?: string | null;
   linkedin_url?: string | null;
 }
+
+/** Seção com mais pontos faltantes na completude do perfil (USR-06). */
+export const NEXT_HINT_SECTIONS = [
+  "basic_data",
+  "skills",
+  "projects",
+  "education",
+  "certifications",
+] as const;
+export type NextHintSection = (typeof NEXT_HINT_SECTIONS)[number];
+
+/**
+ * Dica de ação por seção — texto de exibição é responsabilidade do frontend (API_SPEC):
+ * o backend só informa qual seção tem mais pontos faltantes, sem contagem de itens.
+ */
+export const NEXT_HINT_LABELS: Record<NextHintSection, string> = {
+  basic_data: "Complete seus dados básicos (bio, localização, links) para avançar.",
+  skills: "Adicione mais skills ao seu catálogo para avançar.",
+  projects: "Cadastre um projeto no seu perfil para avançar.",
+  education: "Adicione sua formação acadêmica para avançar.",
+  certifications: "Inclua uma certificação para avançar.",
+};
+
+/** Completude do perfil (`GET /users/me/completeness`, USR-06, SKC-59). */
+export interface ProfileCompleteness {
+  percentage: number;
+  next_hint: NextHintSection | null;
+}

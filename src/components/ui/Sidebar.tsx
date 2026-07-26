@@ -6,7 +6,7 @@
  * global (SKC-42) mantendo paridade de rotas e o logout acessível (USR).
  *
  * Não decide nada de negócio (P-006): apenas navegação e a ação de logout da sessão.
- * Contagens/badges e card de perfil do rodapé ficam fora desta task (T49).
+ * Badges numéricos ficam fora desta task (bloqueados por contrato — T36.3).
  */
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { useSession } from "@/lib/auth/session";
 import { useIsMobile } from "@/lib/ui/use-is-mobile";
+import { ProfileCompletenessCard } from "@/components/ui/ProfileCompletenessCard";
 
 interface NavItem {
   /** Destino do clique. */
@@ -203,11 +204,16 @@ export function Sidebar() {
           })}
         </div>
 
+        {/* Completude do perfil (T49) — some sozinho em erro/perfil inacessível. */}
+        <div className="mt-auto">
+          <ProfileCompletenessCard />
+        </div>
+
         {/* Logout — mantém paridade com o Header anterior (USR). */}
         <button
           type="button"
           onClick={logout}
-          className="mt-auto flex items-center gap-2.5 rounded-control px-2.5 py-2 text-sm font-semibold text-rejected-fg transition-colors hover:bg-hover-bg"
+          className="flex items-center gap-2.5 rounded-control px-2.5 py-2 text-sm font-semibold text-rejected-fg transition-colors hover:bg-hover-bg"
         >
           <LogOut size={16} aria-hidden="true" className="shrink-0" />
           <span>Sair</span>
